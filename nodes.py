@@ -75,6 +75,8 @@ class FetchRepo(Node):
         if len(files_list) == 0:
             raise (ValueError("Failed to fetch files"))
         print(f"Fetched {len(files_list)} files.")
+        for file in files_list:
+            print(file[0])
         return files_list
 
     def post(self, shared, prep_res, exec_res):
