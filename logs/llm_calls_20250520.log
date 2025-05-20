@@ -1,0 +1,6 @@
+2025-05-20 10:03:25,003 - INFO - PROMPT: Hello, how are you?
+2025-05-20 10:03:27,915 - ERROR - OpenRouter API call failed with status 429: {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemini-2.0-flash-exp:free is temporarily rate-limited upstream; please retry shortly.","provider_name":"Google AI Studio"}},"user_id":"user_2wijVam3eY9BmIuystElI2L9eyn"}
+2025-05-20 10:08:03,101 - INFO - PROMPT: Hello, how are you?
+2025-05-20 10:08:05,416 - INFO - RESPONSE: Hello there! I'm functioning well at the moment, thank you for asking.  As an AI, I don't experience feelings or emotions the way humans do, but I'm ready to help and interact with you.
+
+How about you? How are you doing today?
