@@ -96,10 +96,10 @@ coverage/
 .node_repl_history 
 
 # LLM cache
-llm_cache.json
+# llm_cache.json
 
 # Output files
-output/
+# output/
 
 # uv manage
 pyproject.toml
