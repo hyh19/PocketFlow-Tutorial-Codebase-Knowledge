@@ -1,0 +1,2793 @@
+2025-05-27 15:00:17,628 - INFO - PROMPT: Hello, how are you?
+2025-05-27 15:00:19,861 - INFO - RESPONSE: Hello! I'm doing well, just a language model, so I don't have feelings in the human sense.  How are you doing today? 😊
+2025-05-27 15:01:13,502 - INFO - PROMPT: 
+For the project `flutter_counter`:
+
+Codebase Context:
+--- File Index 0: lib/counter_observer.dart ---
+import 'package:bloc/bloc.dart';
+
+/// {@template counter_observer}
+/// [BlocObserver] for the counter application which
+/// observes all state changes.
+/// {@endtemplate}
+class CounterObserver extends BlocObserver {
+  /// {@macro counter_observer}
+  const CounterObserver();
+
+  @override
+  void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
+    super.onChange(bloc, change);
+    // ignore: avoid_print
+    print('${bloc.runtimeType} $change');
+  }
+}
+
+
+--- File Index 1: lib/main.dart ---
+import 'package:bloc/bloc.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_counter/app.dart';
+import 'package:flutter_counter/counter_observer.dart';
+
+void main() {
+  Bloc.observer = const CounterObserver();
+  runApp(const CounterApp());
+}
+
+
+--- File Index 2: lib/app.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_app}
+/// A [MaterialApp] which sets the `home` to [CounterPage].
+/// {@endtemplate}
+class CounterApp extends MaterialApp {
+  /// {@macro counter_app}
+  const CounterApp({super.key}) : super(home: const CounterPage());
+}
+
+
+--- File Index 3: lib/counter/counter.dart ---
+export 'cubit/counter_cubit.dart';
+export 'view/view.dart';
+
+
+--- File Index 4: lib/counter/cubit/counter_cubit.dart ---
+import 'package:bloc/bloc.dart';
+
+/// {@template counter_cubit}
+/// A [Cubit] which manages an [int] as its state.
+/// {@endtemplate}
+class CounterCubit extends Cubit<int> {
+  /// {@macro counter_cubit}
+  CounterCubit() : super(0);
+
+  /// Add 1 to the current state.
+  void increment() => emit(state + 1);
+
+  /// Subtract 1 from the current state.
+  void decrement() => emit(state - 1);
+}
+
+
+--- File Index 5: lib/counter/view/counter_view.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_view}
+/// A [StatelessWidget] which reacts to the provided
+/// [CounterCubit] state and notifies it in response to user input.
+/// {@endtemplate}
+class CounterView extends StatelessWidget {
+  /// {@macro counter_view}
+  const CounterView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Scaffold(
+      body: Center(
+        child: BlocBuilder<CounterCubit, int>(
+          builder: (context, state) {
+            return Text('$state', style: textTheme.displayMedium);
+          },
+        ),
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          FloatingActionButton(
+            key: const Key('counterView_increment_floatingActionButton'),
+            child: const Icon(Icons.add),
+            onPressed: () => context.read<CounterCubit>().increment(),
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton(
+            key: const Key('counterView_decrement_floatingActionButton'),
+            child: const Icon(Icons.remove),
+            onPressed: () => context.read<CounterCubit>().decrement(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+--- File Index 6: lib/counter/view/view.dart ---
+export 'counter_page.dart';
+export 'counter_view.dart';
+
+
+--- File Index 7: lib/counter/view/counter_page.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_page}
+/// A [StatelessWidget] which is responsible for providing a
+/// [CounterCubit] instance to the [CounterView].
+/// {@endtemplate}
+class CounterPage extends StatelessWidget {
+  /// {@macro counter_page}
+  const CounterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => CounterCubit(),
+      child: const CounterView(),
+    );
+  }
+}
+
+
+
+
+Analyze the codebase context.
+Identify the top 5-10 core most important abstractions to help those new to the codebase.
+
+For each abstraction, provide:
+1. A concise `name`.
+2. A beginner-friendly `description` explaining what it is with a simple analogy, in around 100 words.
+3. A list of relevant `file_indices` (integers) using the format `idx # path/comment`.
+
+List of file indices and paths present in the context:
+- 0 # lib/counter_observer.dart
+- 1 # lib/main.dart
+- 2 # lib/app.dart
+- 3 # lib/counter/counter.dart
+- 4 # lib/counter/cubit/counter_cubit.dart
+- 5 # lib/counter/view/counter_view.dart
+- 6 # lib/counter/view/view.dart
+- 7 # lib/counter/view/counter_page.dart
+
+Format the output as a YAML list of dictionaries:
+
+```yaml
+- name: |
+    Query Processing
+  description: |
+    Explains what the abstraction does.
+    It's like a central dispatcher routing requests.
+  file_indices:
+    - 0 # path/to/file1.py
+    - 3 # path/to/related.py
+- name: |
+    Query Optimization
+  description: |
+    Another core concept, similar to a blueprint for objects.
+  file_indices:
+    - 5 # path/to/another.js
+# ... up to 10 abstractions
+```
+2025-05-27 15:01:17,981 - INFO - RESPONSE: ```yaml
+- name: |
+    CounterCubit
+  description: |
+    Think of the CounterCubit as the "brain" of our counter. It holds the actual number (the state) and knows how to increase or decrease it when asked. It's like a simple calculator that can only add or subtract.
+  file_indices:
+    - 3 # lib/counter/counter.dart
+    - 4 # lib/counter/cubit/counter_cubit.dart
+    - 5 # lib/counter/view/counter_view.dart
+    - 7 # lib/counter/view/counter_page.dart
+- name: |
+    CounterView
+  description: |
+    The CounterView is what you see on the screen – the user interface. It's like the display and buttons on our calculator. It shows the current number from the CounterCubit and tells the CounterCubit when the "add" or "subtract" button is pressed.
+  file_indices:
+    - 5 # lib/counter/view/counter_view.dart
+    - 6 # lib/counter/view/view.dart
+    - 7 # lib/counter/view/counter_page.dart
+- name: |
+    CounterPage
+  description: |
+    The CounterPage acts as a kind of manager that connects the CounterCubit (the brain) and the CounterView (the screen). It's like the part of the calculator that makes sure the brain and the display work together correctly. It creates an instance of the CounterCubit and gives it to the CounterView so they can communicate.
+  file_indices:
+    - 6 # lib/counter/view/view.dart
+    - 7 # lib/counter/view/counter_page.dart
+    - 2 # lib/app.dart
+- name: |
+    CounterApp
+  description: |
+    The CounterApp is the overall application. It's like the entire physical calculator device that holds the screen and the brain. It tells Flutter to display the CounterPage as the main screen.
+  file_indices:
+    - 2 # lib/app.dart
+    - 1 # lib/main.dart
+- name: |
+    BlocObserver
+  description: |
+    The BlocObserver is like a silent reporter who watches everything the CounterCubit does. Every time the number in the CounterCubit changes, the observer makes a note of it and prints it out. It's helpful for understanding how the state changes over time.
+  file_indices:
+    - 0 # lib/counter_observer.dart
+    - 1 # lib/main.dart
+```
+2025-05-27 15:01:17,988 - INFO - PROMPT: 
+Based on the following abstractions and relevant code snippets from the project `flutter_counter`:
+
+List of Abstraction Indices and Names:
+0 # CounterCubit
+
+1 # CounterView
+
+2 # CounterPage
+
+3 # CounterApp
+
+4 # BlocObserver
+
+
+Context (Abstractions, Descriptions, Code):
+Identified Abstractions:\n- Index 0: CounterCubit
+ (Relevant file indices: [3, 4, 5, 7])\n  Description: Think of the CounterCubit as the "brain" of our counter. It holds the actual number (the state) and knows how to increase or decrease it when asked. It's like a simple calculator that can only add or subtract.
+\n- Index 1: CounterView
+ (Relevant file indices: [5, 6, 7])\n  Description: The CounterView is what you see on the screen – the user interface. It's like the display and buttons on our calculator. It shows the current number from the CounterCubit and tells the CounterCubit when the "add" or "subtract" button is pressed.
+\n- Index 2: CounterPage
+ (Relevant file indices: [2, 6, 7])\n  Description: The CounterPage acts as a kind of manager that connects the CounterCubit (the brain) and the CounterView (the screen). It's like the part of the calculator that makes sure the brain and the display work together correctly. It creates an instance of the CounterCubit and gives it to the CounterView so they can communicate.
+\n- Index 3: CounterApp
+ (Relevant file indices: [1, 2])\n  Description: The CounterApp is the overall application. It's like the entire physical calculator device that holds the screen and the brain. It tells Flutter to display the CounterPage as the main screen.
+\n- Index 4: BlocObserver
+ (Relevant file indices: [0, 1])\n  Description: The BlocObserver is like a silent reporter who watches everything the CounterCubit does. Every time the number in the CounterCubit changes, the observer makes a note of it and prints it out. It's helpful for understanding how the state changes over time.
+\n\nRelevant File Snippets (Referenced by Index and Path):\n--- File: 0 # lib/counter_observer.dart ---\nimport 'package:bloc/bloc.dart';
+
+/// {@template counter_observer}
+/// [BlocObserver] for the counter application which
+/// observes all state changes.
+/// {@endtemplate}
+class CounterObserver extends BlocObserver {
+  /// {@macro counter_observer}
+  const CounterObserver();
+
+  @override
+  void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
+    super.onChange(bloc, change);
+    // ignore: avoid_print
+    print('${bloc.runtimeType} $change');
+  }
+}
+\n\n--- File: 1 # lib/main.dart ---\nimport 'package:bloc/bloc.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_counter/app.dart';
+import 'package:flutter_counter/counter_observer.dart';
+
+void main() {
+  Bloc.observer = const CounterObserver();
+  runApp(const CounterApp());
+}
+\n\n--- File: 2 # lib/app.dart ---\nimport 'package:flutter/material.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_app}
+/// A [MaterialApp] which sets the `home` to [CounterPage].
+/// {@endtemplate}
+class CounterApp extends MaterialApp {
+  /// {@macro counter_app}
+  const CounterApp({super.key}) : super(home: const CounterPage());
+}
+\n\n--- File: 3 # lib/counter/counter.dart ---\nexport 'cubit/counter_cubit.dart';
+export 'view/view.dart';
+\n\n--- File: 4 # lib/counter/cubit/counter_cubit.dart ---\nimport 'package:bloc/bloc.dart';
+
+/// {@template counter_cubit}
+/// A [Cubit] which manages an [int] as its state.
+/// {@endtemplate}
+class CounterCubit extends Cubit<int> {
+  /// {@macro counter_cubit}
+  CounterCubit() : super(0);
+
+  /// Add 1 to the current state.
+  void increment() => emit(state + 1);
+
+  /// Subtract 1 from the current state.
+  void decrement() => emit(state - 1);
+}
+\n\n--- File: 5 # lib/counter/view/counter_view.dart ---\nimport 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_view}
+/// A [StatelessWidget] which reacts to the provided
+/// [CounterCubit] state and notifies it in response to user input.
+/// {@endtemplate}
+class CounterView extends StatelessWidget {
+  /// {@macro counter_view}
+  const CounterView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Scaffold(
+      body: Center(
+        child: BlocBuilder<CounterCubit, int>(
+          builder: (context, state) {
+            return Text('$state', style: textTheme.displayMedium);
+          },
+        ),
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          FloatingActionButton(
+            key: const Key('counterView_increment_floatingActionButton'),
+            child: const Icon(Icons.add),
+            onPressed: () => context.read<CounterCubit>().increment(),
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton(
+            key: const Key('counterView_decrement_floatingActionButton'),
+            child: const Icon(Icons.remove),
+            onPressed: () => context.read<CounterCubit>().decrement(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+\n\n--- File: 6 # lib/counter/view/view.dart ---\nexport 'counter_page.dart';
+export 'counter_view.dart';
+\n\n--- File: 7 # lib/counter/view/counter_page.dart ---\nimport 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_page}
+/// A [StatelessWidget] which is responsible for providing a
+/// [CounterCubit] instance to the [CounterView].
+/// {@endtemplate}
+class CounterPage extends StatelessWidget {
+  /// {@macro counter_page}
+  const CounterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => CounterCubit(),
+      child: const CounterView(),
+    );
+  }
+}
+
+
+Please provide:
+1. A high-level `summary` of the project's main purpose and functionality in a few beginner-friendly sentences. Use markdown formatting with **bold** and *italic* text to highlight important concepts.
+2. A list (`relationships`) describing the key interactions between these abstractions. For each relationship, specify:
+    - `from_abstraction`: Index of the source abstraction (e.g., `0 # AbstractionName1`)
+    - `to_abstraction`: Index of the target abstraction (e.g., `1 # AbstractionName2`)
+    - `label`: A brief label for the interaction **in just a few words** (e.g., "Manages", "Inherits", "Uses").
+    Ideally the relationship should be backed by one abstraction calling or passing parameters to another.
+    Simplify the relationship and exclude those non-important ones.
+
+IMPORTANT: Make sure EVERY abstraction is involved in at least ONE relationship (either as source or target). Each abstraction index must appear at least once across all relationships.
+
+Format the output as YAML:
+
+```yaml
+summary: |
+  A brief, simple explanation of the project.
+  Can span multiple lines with **bold** and *italic* for emphasis.
+relationships:
+  - from_abstraction: 0 # AbstractionName1
+    to_abstraction: 1 # AbstractionName2
+    label: "Manages"
+  - from_abstraction: 2 # AbstractionName3
+    to_abstraction: 0 # AbstractionName1
+    label: "Provides config"
+  # ... other relationships
+```
+
+Now, provide the YAML output:
+
+2025-05-27 15:01:21,276 - INFO - RESPONSE: ```yaml
+summary: |
+  This Flutter project builds a simple *counter* application.
+  It uses a *Cubits and Blocs* pattern to manage the counter's number.
+  The user can see the current number and press buttons to **increase** or **decrease** it.
+relationships:
+  - from_abstraction: 3 # CounterApp
+    to_abstraction: 2 # CounterPage
+    label: "Displays home screen"
+  - from_abstraction: 2 # CounterPage
+    to_abstraction: 0 # CounterCubit
+    label: "Provides Cubit instance"
+  - from_abstraction: 2 # CounterPage
+    to_abstraction: 1 # CounterView
+    label: "Contains View"
+  - from_abstraction: 1 # CounterView
+    to_abstraction: 0 # CounterCubit
+    label: "Interacts with Cubit"
+  - from_abstraction: 0 # CounterCubit
+    to_abstraction: 4 # BlocObserver
+    label: "Notifies Observer"
+  - from_abstraction: 1 # CounterView
+    to_abstraction: 0 # CounterCubit
+    label: "Reads state from"
+```
+2025-05-27 15:01:21,283 - INFO - PROMPT: 
+Given the following project abstractions and their relationships for the project ```` flutter_counter ````:
+
+Abstractions (Index # Name):
+- 0 # CounterCubit
+
+- 1 # CounterView
+
+- 2 # CounterPage
+
+- 3 # CounterApp
+
+- 4 # BlocObserver
+
+
+Context about relationships and project summary:
+Project Summary:
+This Flutter project builds a simple *counter* application.
+It uses a *Cubits and Blocs* pattern to manage the counter's number.
+The user can see the current number and press buttons to **increase** or **decrease** it.
+
+
+Relationships (Indices refer to abstractions above):
+- From 3 (CounterApp
+) to 2 (CounterPage
+): Displays home screen
+- From 2 (CounterPage
+) to 0 (CounterCubit
+): Provides Cubit instance
+- From 2 (CounterPage
+) to 1 (CounterView
+): Contains View
+- From 1 (CounterView
+) to 0 (CounterCubit
+): Interacts with Cubit
+- From 0 (CounterCubit
+) to 4 (BlocObserver
+): Notifies Observer
+- From 1 (CounterView
+) to 0 (CounterCubit
+): Reads state from
+
+
+If you are going to make a tutorial for ```` flutter_counter ````, what is the best order to explain these abstractions, from first to last?
+Ideally, first explain those that are the most important or foundational, perhaps user-facing concepts or entry points. Then move to more detailed, lower-level implementation details or supporting concepts.
+
+Output the ordered list of abstraction indices, including the name in a comment for clarity. Use the format `idx # AbstractionName`.
+
+```yaml
+- 2 # FoundationalConcept
+- 0 # CoreClassA
+- 1 # CoreClassB (uses CoreClassA)
+- ...
+```
+
+Now, provide the YAML output:
+
+2025-05-27 15:01:22,711 - INFO - RESPONSE: ```yaml
+- 3 # CounterApp (Entry point, user-facing concept of the entire app)
+- 2 # CounterPage (The screen the user interacts with directly)
+- 1 # CounterView (The UI representation within the page)
+- 0 # CounterCubit (The logic unit managing the counter state, interacts with the View)
+- 4 # BlocObserver (Supporting concept, monitors Bloc events and transitions)
+```
+2025-05-27 15:01:22,716 - INFO - PROMPT: 
+Write a very beginner-friendly tutorial chapter (in Markdown format) for the project `flutter_counter` about the concept: "CounterApp
+". This is Chapter 1.
+
+Concept Details:
+- Name: CounterApp
+
+- Description:
+The CounterApp is the overall application. It's like the entire physical calculator device that holds the screen and the brain. It tells Flutter to display the CounterPage as the main screen.
+
+
+Complete Tutorial Structure:
+1. [CounterApp
+](01_counterapp_.md)
+2. [CounterPage
+](02_counterpage_.md)
+3. [CounterView
+](03_counterview_.md)
+4. [CounterCubit
+](04_countercubit_.md)
+5. [BlocObserver
+](05_blocobserver_.md)
+
+Context from previous chapters:
+This is the first chapter.
+
+Relevant Code Snippets (Code itself remains unchanged):
+--- File: lib/main.dart ---
+import 'package:bloc/bloc.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_counter/app.dart';
+import 'package:flutter_counter/counter_observer.dart';
+
+void main() {
+  Bloc.observer = const CounterObserver();
+  runApp(const CounterApp());
+}
+
+
+--- File: lib/app.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_app}
+/// A [MaterialApp] which sets the `home` to [CounterPage].
+/// {@endtemplate}
+class CounterApp extends MaterialApp {
+  /// {@macro counter_app}
+  const CounterApp({super.key}) : super(home: const CounterPage());
+}
+
+
+Instructions for the chapter (Generate content in English unless specified otherwise):
+- Start with a clear heading (e.g., `# Chapter 1: CounterApp
+`). Use the provided concept name.
+
+- If this is not the first chapter, begin with a brief transition from the previous chapter, referencing it with a proper Markdown link using its name.
+
+- Begin with a high-level motivation explaining what problem this abstraction solves. Start with a central use case as a concrete example. The whole chapter should guide the reader to understand how to solve this use case. Make it very minimal and friendly to beginners.
+
+- If the abstraction is complex, break it down into key concepts. Explain each concept one-by-one in a very beginner-friendly way.
+
+- Explain how to use this abstraction to solve the use case. Give example inputs and outputs for code snippets (if the output isn't values, describe at a high level what will happen).
+
+- Each code block should be BELOW 10 lines! If longer code blocks are needed, break them down into smaller pieces and walk through them one-by-one. Aggresively simplify the code to make it minimal. Use comments to skip non-important implementation details. Each code block should have a beginner friendly explanation right after it.
+
+- Describe the internal implementation to help understand what's under the hood. First provide a non-code or code-light walkthrough on what happens step-by-step when the abstraction is called. It's recommended to use a simple sequenceDiagram with a dummy example - keep it minimal with at most 5 participants to ensure clarity. If participant name has space, use: `participant QP as Query Processing`. .
+
+- Then dive deeper into code for the internal implementation with references to files. Provide example code blocks, but make them similarly simple and beginner-friendly. Explain.
+
+- IMPORTANT: When you need to refer to other core abstractions covered in other chapters, ALWAYS use proper Markdown links like this: [Chapter Title](filename.md). Use the Complete Tutorial Structure above to find the correct filename and the chapter title. Translate the surrounding text.
+
+- Use mermaid diagrams to illustrate complex concepts (```mermaid``` format). .
+
+- Heavily use analogies and examples throughout to help beginners understand.
+
+- End the chapter with a brief conclusion that summarizes what was learned and provides a transition to the next chapter. If there is a next chapter, use a proper Markdown link: [Next Chapter Title](next_chapter_filename).
+
+- Ensure the tone is welcoming and easy for a newcomer to understand.
+
+- Output *only* the Markdown content for this chapter.
+
+Now, directly provide a super beginner-friendly Markdown output (DON'T need ```markdown``` tags):
+
+2025-05-27 15:01:31,209 - INFO - RESPONSE: # Chapter 1: CounterApp
+
+Welcome to the wonderful world of Flutter and our `flutter_counter` project! In this first chapter, we're going to talk about the very foundation of our application: the `CounterApp`. Think of the `CounterApp` like the outside shell or the main structure of a physical calculator. It's what you hold in your hand and it contains everything inside.
+
+So, what does the `CounterApp` actually *do* for us? It's the main entry point of our application. When you run your Flutter app, the `CounterApp` is the very first thing that gets created and displayed. Its main job is to tell Flutter which "screen" or "page" to show when the app starts.
+
+In our `flutter_counter` project, the `CounterApp` is responsible for showing the "Counter Page" as the main screen. We'll learn more about the [CounterPage](02_counterpage_.md) in the next chapter, but for now, just imagine it's the part of the calculator where you see the numbers.
+
+Let's look at the code that makes this happen.
+
+### Setting up the App
+
+All Flutter apps start execution in the `main` function. This function is like the initial power button for your calculator.
+
+```dart
+// File: lib/main.dart
+
+import 'package:bloc/bloc.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_counter/app.dart';
+import 'package:flutter_counter/counter_observer.dart';
+
+void main() {
+  Bloc.observer = const CounterObserver(); // We'll talk about this later!
+  runApp(const CounterApp()); // This is where the magic happens!
+}
+```
+
+In this simple code snippet, the most important line for understanding `CounterApp` is `runApp(const CounterApp());`. This tells Flutter to build and display the `CounterApp` widget. Widgets are the building blocks of Flutter's user interface, like individual buttons or text labels, but `CounterApp` is a special kind of widget that defines the overall structure of the app.
+
+### What is `CounterApp`?
+
+Now let's peek inside the `CounterApp` code itself. Remember, think of `CounterApp` as the outer casing of our calculator.
+
+```dart
+// File: lib/app.dart
+
+import 'package:flutter/material.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_app}
+/// A [MaterialApp] which sets the `home` to [CounterPage].
+/// {@endtemplate}
+class CounterApp extends MaterialApp {
+  /// {@macro counter_app}
+  const CounterApp({super.key}) : super(home: const CounterPage());
+}
+```
+
+This looks a bit different from what you might expect! The `CounterApp` class *extends* (or inherits from) `MaterialApp`. `MaterialApp` is a special widget provided by Flutter that provides a lot of the basic structure and styling that you expect in a standard mobile app using Google's "Material Design". It handles things like themes, navigation, and setting the initial screen.
+
+The key part here is `: super(home: const CounterPage())`. This is how `CounterApp` tells the `MaterialApp` what to display first. It's saying, "Dear `MaterialApp`, when you start up, please show the `CounterPage`!". The `home` property of `MaterialApp` is where you set the primary screen of your application.
+
+So, the `CounterApp` isn't doing a lot of heavy lifting itself. Its main job is to use the `MaterialApp` provided by Flutter and configure it to display our [CounterPage](02_counterpage_.md) as the starting point.
+
+### How It All Flows Together
+
+Let's visualize the simple flow when our app starts:
+
+```mermaid
+sequenceDiagram
+    participant Main as main() function
+    participant Flutter as Flutter Framework
+    participant CounterApp as CounterApp
+    participant CounterPage as CounterPage
+
+    Main->Flutter: runApp(CounterApp)
+    Flutter->CounterApp: Create CounterApp widget
+    CounterApp->Flutter: Tell MaterialApp to set home to CounterPage
+    Flutter->CounterPage: Create CounterPage widget
+    Flutter->Flutter: Display CounterPage
+```
+
+1. The `main` function tells Flutter to run our application, starting with `CounterApp`.
+2. Flutter creates an instance of the `CounterApp` widget.
+3. The `CounterApp`, which is a `MaterialApp`, is told to set its "home" screen to `CounterPage`.
+4. Flutter creates an instance of the `CounterPage` widget.
+5. Flutter then displays the `CounterPage` on the screen.
+
+It's a simple setup, but crucial for launching our application and presenting the correct initial content.
+
+### Conclusion
+
+In this chapter, we learned that the `CounterApp` is the main wrapper around our entire application. It's responsible for telling Flutter what the main screen should be, which in our case is the [CounterPage](02_counterpage_.md). It achieves this by extending Flutter's built-in `MaterialApp` and setting the `home` property.
+
+Next, we'll dive into the [CounterPage](02_counterpage_.md) itself to see what makes up that initial screen we're displaying.
+
+[Next Chapter: CounterPage](02_counterpage_.md)
+2025-05-27 15:01:31,213 - INFO - PROMPT: 
+Write a very beginner-friendly tutorial chapter (in Markdown format) for the project `flutter_counter` about the concept: "CounterPage
+". This is Chapter 2.
+
+Concept Details:
+- Name: CounterPage
+
+- Description:
+The CounterPage acts as a kind of manager that connects the CounterCubit (the brain) and the CounterView (the screen). It's like the part of the calculator that makes sure the brain and the display work together correctly. It creates an instance of the CounterCubit and gives it to the CounterView so they can communicate.
+
+
+Complete Tutorial Structure:
+1. [CounterApp
+](01_counterapp_.md)
+2. [CounterPage
+](02_counterpage_.md)
+3. [CounterView
+](03_counterview_.md)
+4. [CounterCubit
+](04_countercubit_.md)
+5. [BlocObserver
+](05_blocobserver_.md)
+
+Context from previous chapters:
+# Chapter 1: CounterApp
+
+Welcome to the wonderful world of Flutter and our `flutter_counter` project! In this first chapter, we're going to talk about the very foundation of our application: the `CounterApp`. Think of the `CounterApp` like the outside shell or the main structure of a physical calculator. It's what you hold in your hand and it contains everything inside.
+
+So, what does the `CounterApp` actually *do* for us? It's the main entry point of our application. When you run your Flutter app, the `CounterApp` is the very first thing that gets created and displayed. Its main job is to tell Flutter which "screen" or "page" to show when the app starts.
+
+In our `flutter_counter` project, the `CounterApp` is responsible for showing the "Counter Page" as the main screen. We'll learn more about the [CounterPage](02_counterpage_.md) in the next chapter, but for now, just imagine it's the part of the calculator where you see the numbers.
+
+Let's look at the code that makes this happen.
+
+### Setting up the App
+
+All Flutter apps start execution in the `main` function. This function is like the initial power button for your calculator.
+
+```dart
+// File: lib/main.dart
+
+import 'package:bloc/bloc.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_counter/app.dart';
+import 'package:flutter_counter/counter_observer.dart';
+
+void main() {
+  Bloc.observer = const CounterObserver(); // We'll talk about this later!
+  runApp(const CounterApp()); // This is where the magic happens!
+}
+```
+
+In this simple code snippet, the most important line for understanding `CounterApp` is `runApp(const CounterApp());`. This tells Flutter to build and display the `CounterApp` widget. Widgets are the building blocks of Flutter's user interface, like individual buttons or text labels, but `CounterApp` is a special kind of widget that defines the overall structure of the app.
+
+### What is `CounterApp`?
+
+Now let's peek inside the `CounterApp` code itself. Remember, think of `CounterApp` as the outer casing of our calculator.
+
+```dart
+// File: lib/app.dart
+
+import 'package:flutter/material.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_app}
+/// A [MaterialApp] which sets the `home` to [CounterPage].
+/// {@endtemplate}
+class CounterApp extends MaterialApp {
+  /// {@macro counter_app}
+  const CounterApp({super.key}) : super(home: const CounterPage());
+}
+```
+
+This looks a bit different from what you might expect! The `CounterApp` class *extends* (or inherits from) `MaterialApp`. `MaterialApp` is a special widget provided by Flutter that provides a lot of the basic structure and styling that you expect in a standard mobile app using Google's "Material Design". It handles things like themes, navigation, and setting the initial screen.
+
+The key part here is `: super(home: const CounterPage())`. This is how `CounterApp` tells the `MaterialApp` what to display first. It's saying, "Dear `MaterialApp`, when you start up, please show the `CounterPage`!". The `home` property of `MaterialApp` is where you set the primary screen of your application.
+
+So, the `CounterApp` isn't doing a lot of heavy lifting itself. Its main job is to use the `MaterialApp` provided by Flutter and configure it to display our [CounterPage](02_counterpage_.md) as the starting point.
+
+### How It All Flows Together
+
+Let's visualize the simple flow when our app starts:
+
+```mermaid
+sequenceDiagram
+    participant Main as main() function
+    participant Flutter as Flutter Framework
+    participant CounterApp as CounterApp
+    participant CounterPage as CounterPage
+
+    Main->Flutter: runApp(CounterApp)
+    Flutter->CounterApp: Create CounterApp widget
+    CounterApp->Flutter: Tell MaterialApp to set home to CounterPage
+    Flutter->CounterPage: Create CounterPage widget
+    Flutter->Flutter: Display CounterPage
+```
+
+1. The `main` function tells Flutter to run our application, starting with `CounterApp`.
+2. Flutter creates an instance of the `CounterApp` widget.
+3. The `CounterApp`, which is a `MaterialApp`, is told to set its "home" screen to `CounterPage`.
+4. Flutter creates an instance of the `CounterPage` widget.
+5. Flutter then displays the `CounterPage` on the screen.
+
+It's a simple setup, but crucial for launching our application and presenting the correct initial content.
+
+### Conclusion
+
+In this chapter, we learned that the `CounterApp` is the main wrapper around our entire application. It's responsible for telling Flutter what the main screen should be, which in our case is the [CounterPage](02_counterpage_.md). It achieves this by extending Flutter's built-in `MaterialApp` and setting the `home` property.
+
+Next, we'll dive into the [CounterPage](02_counterpage_.md) itself to see what makes up that initial screen we're displaying.
+
+[Next Chapter: CounterPage](02_counterpage_.md)
+
+Relevant Code Snippets (Code itself remains unchanged):
+--- File: lib/app.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_app}
+/// A [MaterialApp] which sets the `home` to [CounterPage].
+/// {@endtemplate}
+class CounterApp extends MaterialApp {
+  /// {@macro counter_app}
+  const CounterApp({super.key}) : super(home: const CounterPage());
+}
+
+
+--- File: lib/counter/view/view.dart ---
+export 'counter_page.dart';
+export 'counter_view.dart';
+
+
+--- File: lib/counter/view/counter_page.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_page}
+/// A [StatelessWidget] which is responsible for providing a
+/// [CounterCubit] instance to the [CounterView].
+/// {@endtemplate}
+class CounterPage extends StatelessWidget {
+  /// {@macro counter_page}
+  const CounterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => CounterCubit(),
+      child: const CounterView(),
+    );
+  }
+}
+
+
+Instructions for the chapter (Generate content in English unless specified otherwise):
+- Start with a clear heading (e.g., `# Chapter 2: CounterPage
+`). Use the provided concept name.
+
+- If this is not the first chapter, begin with a brief transition from the previous chapter, referencing it with a proper Markdown link using its name.
+
+- Begin with a high-level motivation explaining what problem this abstraction solves. Start with a central use case as a concrete example. The whole chapter should guide the reader to understand how to solve this use case. Make it very minimal and friendly to beginners.
+
+- If the abstraction is complex, break it down into key concepts. Explain each concept one-by-one in a very beginner-friendly way.
+
+- Explain how to use this abstraction to solve the use case. Give example inputs and outputs for code snippets (if the output isn't values, describe at a high level what will happen).
+
+- Each code block should be BELOW 10 lines! If longer code blocks are needed, break them down into smaller pieces and walk through them one-by-one. Aggresively simplify the code to make it minimal. Use comments to skip non-important implementation details. Each code block should have a beginner friendly explanation right after it.
+
+- Describe the internal implementation to help understand what's under the hood. First provide a non-code or code-light walkthrough on what happens step-by-step when the abstraction is called. It's recommended to use a simple sequenceDiagram with a dummy example - keep it minimal with at most 5 participants to ensure clarity. If participant name has space, use: `participant QP as Query Processing`. .
+
+- Then dive deeper into code for the internal implementation with references to files. Provide example code blocks, but make them similarly simple and beginner-friendly. Explain.
+
+- IMPORTANT: When you need to refer to other core abstractions covered in other chapters, ALWAYS use proper Markdown links like this: [Chapter Title](filename.md). Use the Complete Tutorial Structure above to find the correct filename and the chapter title. Translate the surrounding text.
+
+- Use mermaid diagrams to illustrate complex concepts (```mermaid``` format). .
+
+- Heavily use analogies and examples throughout to help beginners understand.
+
+- End the chapter with a brief conclusion that summarizes what was learned and provides a transition to the next chapter. If there is a next chapter, use a proper Markdown link: [Next Chapter Title](next_chapter_filename).
+
+- Ensure the tone is welcoming and easy for a newcomer to understand.
+
+- Output *only* the Markdown content for this chapter.
+
+Now, directly provide a super beginner-friendly Markdown output (DON'T need ```markdown``` tags):
+
+2025-05-27 15:01:44,446 - INFO - RESPONSE: # Chapter 2: CounterPage
+
+Welcome back! In the last chapter, we learned that the [CounterApp](01_counterapp_.md) is like the outer shell of our calculator, and its main job is to show the [CounterPage](02_counterpage_.md) when the app starts. Now, it's time to open up that shell and see what the [CounterPage](02_counterpage_.md) is all about!
+
+Think of the [CounterPage](02_CounterPage.md) as the part of the calculator that contains both the "brain" (the logic that knows how to count) and the "screen" (what you actually see). The [CounterPage](02_counterpage_.md) acts as a helpful helper that makes sure the brain and the screen can talk to each other.
+
+Why do we need this "helper"? In Flutter, our user interface (the screen you see) is made up of "widgets". Sometimes, these widgets need to know about some special "data" or "manager" to work correctly. In our counter app, the "screen" part needs to know about the "brain" part so it can ask it to count up or down. The [CounterPage](02_counterpage_.md) is where we set up this connection.
+
+## What is the CounterPage?
+
+The [CounterPage](02_counterpage_.md) is a simple Flutter widget. Its main purpose is to bring together two other important parts of our counter app:
+
+1.  The **CounterCubit**: This is like the "brain" of our counter. It holds the actual number and has the logic to increase or decrease it. We'll learn more about the [CounterCubit](04_countercubit_.md) in a later chapter.
+2.  The **CounterView**: This is the "screen" part. It displays the current number and has the buttons you press to make the number change. We'll explore the [CounterView](03_counterview_.md) in the next chapter.
+
+The [CounterPage](02_counterpage_.md) doesn't *do* the counting itself, and it doesn't *draw* anything on the screen directly. Its job is just to make sure the [CounterView](03_counterview_.md) has access to the [CounterCubit](04_countercubit_.md).
+
+## Setting Up the Connection with BlocProvider
+
+How does the [CounterPage](02_counterpage_.md) achieve this connection? It uses something called a `BlocProvider`. Don't worry too much about the word "Bloc" for now, it's just a pattern (or a way of organizing code) that helps manage the "brain" part of our app.
+
+The `BlocProvider` is like a special box that can hold our [CounterCubit](04_countercubit_.md). When we put the [CounterCubit](04_countercubit_.md) in the `BlocProvider`, any widget *inside* that `BlocProvider` (like our [CounterView](03_counterview_.md)) can easily find and use the [CounterCubit](04_countercubit_.md).
+
+Let's look at the code for the [CounterPage](02_counterpage_.md):
+
+```dart
+// File: lib/counter/view/counter_page.dart
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // We need this for BlocProvider
+import 'package:flutter_counter/counter/counter.dart'; // Imports CounterCubit and CounterView
+
+// This is our CounterPage widget!
+class CounterPage extends StatelessWidget {
+  const CounterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider( // This is the special box!
+      create: (_) => CounterCubit(), // We create the "brain" and put it in the box
+      child: const CounterView(), // The "screen" (and everything inside it) can access the box
+    );
+  }
+}
+```
+
+Let's break this down:
+
+*   `class CounterPage extends StatelessWidget`: This just means [CounterPage](02_counterpage_.md) is a simple widget that doesn't need to remember anything itself.
+*   `Widget build(BuildContext context)`: Every widget needs this part to describe what it looks like.
+*   `return BlocProvider(...)`: This is the key part! We are returning a `BlocProvider` widget.
+*   `create: (_) => CounterCubit()`: This tells the `BlocProvider` *how* to create the "brain" (the [CounterCubit](04_countercubit_.md)). It creates a new `CounterCubit` whenever the `BlocProvider` is built.
+*   `child: const CounterView()`: This tells the `BlocProvider` that our [CounterView](03_counterview_.md) (the "screen") should be *inside* this `BlocProvider`. This means the [CounterView](03_counterview_.md) can now easily get the `CounterCubit` from the `BlocProvider`.
+
+## How the Connection Works
+
+When the [CounterApp](01_counterapp_.md) tells Flutter to show the [CounterPage](02_counterpage_.md), here's what happens:
+
+```mermaid
+sequenceDiagram
+    participant Flutter as Flutter Framework
+    participant CounterApp as CounterApp
+    participant CounterPage as CounterPage
+    participant BlocProvider as BlocProvider
+    participant CounterCubit as CounterCubit
+    participant CounterView as CounterView
+
+    Flutter->CounterApp: Create CounterApp
+    CounterApp->Flutter: Display CounterPage
+    Flutter->CounterPage: Create CounterPage
+    CounterPage->BlocProvider: Create BlocProvider
+    BlocProvider->CounterCubit: Create CounterCubit (using 'create')
+    BlocProvider->Flutter: Display CounterView (as its child)
+    Flutter->CounterView: Create CounterView
+    CounterView->BlocProvider: Look for CounterCubit (we'll see how in the next chapter!)
+    BlocProvider-->CounterView: Provide CounterCubit
+    Flutter->Flutter: Display CounterView and its content
+```
+
+1.  Flutter starts the app, creating the [CounterApp](01_counterapp_.md).
+2.  The [CounterApp](01_counterapp_.md) tells Flutter to show the [CounterPage](02_counterpage_.md).
+3.  Flutter creates the [CounterPage](02_counterpage_.md) widget.
+4.  Inside its `build` method, the [CounterPage](02_counterpage_.md) creates a `BlocProvider`.
+5.  The `BlocProvider` uses the `create` instruction to make a new [CounterCubit](04_countercubit_.md).
+6.  The `BlocProvider` then tells Flutter to display its "child", which is our [CounterView](03_counterview_.md).
+7.  Flutter creates the [CounterView](03_counterview_.md) widget.
+8.  Now, the [CounterView](03_counterview_.md) can easily find the [CounterCubit](04_countercubit_.md) that was put into the `BlocProvider` by the [CounterPage](02_counterpage_.md). We'll see *how* the [CounterView](03_counterview_.md) does this in the next chapter!
+9.  Finally, Flutter displays the [CounterView](03_counterview_.md) on your screen, and because the [CounterView](03_counterview_.md) has access to the [CounterCubit](04_countercubit_.md), it knows the current count and can ask the [CounterCubit](04_countercubit_.md) to change the number when you press buttons.
+
+## Conclusion
+
+The [CounterPage](02_counterpage_.md) acts as a crucial intermediate step. It's not the visual part (that's the [CounterView](03_counterview_.md)), and it's not the logic part (that's the [CounterCubit](04_countercubit_.md)). Instead, it's the "connector" that creates the [CounterCubit](04_countercubit_.md) and makes it available to the [CounterView](03_counterview_.md) using a `BlocProvider`. This setup is a common way in Flutter to provide important "managers" or "brains" to the parts of your app that need them.
+
+Now that we understand how the [CounterPage](02_counterpage_.md) connects the brain and the screen, let's dive into the "screen" part itself: the [CounterView](03_counterview_.md)!
+
+[Next Chapter: CounterView](03_counterview_.md)
+2025-05-27 15:01:44,450 - INFO - PROMPT: 
+Write a very beginner-friendly tutorial chapter (in Markdown format) for the project `flutter_counter` about the concept: "CounterView
+". This is Chapter 3.
+
+Concept Details:
+- Name: CounterView
+
+- Description:
+The CounterView is what you see on the screen – the user interface. It's like the display and buttons on our calculator. It shows the current number from the CounterCubit and tells the CounterCubit when the "add" or "subtract" button is pressed.
+
+
+Complete Tutorial Structure:
+1. [CounterApp
+](01_counterapp_.md)
+2. [CounterPage
+](02_counterpage_.md)
+3. [CounterView
+](03_counterview_.md)
+4. [CounterCubit
+](04_countercubit_.md)
+5. [BlocObserver
+](05_blocobserver_.md)
+
+Context from previous chapters:
+# Chapter 1: CounterApp
+
+Welcome to the wonderful world of Flutter and our `flutter_counter` project! In this first chapter, we're going to talk about the very foundation of our application: the `CounterApp`. Think of the `CounterApp` like the outside shell or the main structure of a physical calculator. It's what you hold in your hand and it contains everything inside.
+
+So, what does the `CounterApp` actually *do* for us? It's the main entry point of our application. When you run your Flutter app, the `CounterApp` is the very first thing that gets created and displayed. Its main job is to tell Flutter which "screen" or "page" to show when the app starts.
+
+In our `flutter_counter` project, the `CounterApp` is responsible for showing the "Counter Page" as the main screen. We'll learn more about the [CounterPage](02_counterpage_.md) in the next chapter, but for now, just imagine it's the part of the calculator where you see the numbers.
+
+Let's look at the code that makes this happen.
+
+### Setting up the App
+
+All Flutter apps start execution in the `main` function. This function is like the initial power button for your calculator.
+
+```dart
+// File: lib/main.dart
+
+import 'package:bloc/bloc.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_counter/app.dart';
+import 'package:flutter_counter/counter_observer.dart';
+
+void main() {
+  Bloc.observer = const CounterObserver(); // We'll talk about this later!
+  runApp(const CounterApp()); // This is where the magic happens!
+}
+```
+
+In this simple code snippet, the most important line for understanding `CounterApp` is `runApp(const CounterApp());`. This tells Flutter to build and display the `CounterApp` widget. Widgets are the building blocks of Flutter's user interface, like individual buttons or text labels, but `CounterApp` is a special kind of widget that defines the overall structure of the app.
+
+### What is `CounterApp`?
+
+Now let's peek inside the `CounterApp` code itself. Remember, think of `CounterApp` as the outer casing of our calculator.
+
+```dart
+// File: lib/app.dart
+
+import 'package:flutter/material.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_app}
+/// A [MaterialApp] which sets the `home` to [CounterPage].
+/// {@endtemplate}
+class CounterApp extends MaterialApp {
+  /// {@macro counter_app}
+  const CounterApp({super.key}) : super(home: const CounterPage());
+}
+```
+
+This looks a bit different from what you might expect! The `CounterApp` class *extends* (or inherits from) `MaterialApp`. `MaterialApp` is a special widget provided by Flutter that provides a lot of the basic structure and styling that you expect in a standard mobile app using Google's "Material Design". It handles things like themes, navigation, and setting the initial screen.
+
+The key part here is `: super(home: const CounterPage())`. This is how `CounterApp` tells the `MaterialApp` what to display first. It's saying, "Dear `MaterialApp`, when you start up, please show the `CounterPage`!". The `home` property of `MaterialApp` is where you set the primary screen of your application.
+
+So, the `CounterApp` isn't doing a lot of heavy lifting itself. Its main job is to use the `MaterialApp` provided by Flutter and configure it to display our [CounterPage](02_counterpage_.md) as the starting point.
+
+### How It All Flows Together
+
+Let's visualize the simple flow when our app starts:
+
+```mermaid
+sequenceDiagram
+    participant Main as main() function
+    participant Flutter as Flutter Framework
+    participant CounterApp as CounterApp
+    participant CounterPage as CounterPage
+
+    Main->Flutter: runApp(CounterApp)
+    Flutter->CounterApp: Create CounterApp widget
+    CounterApp->Flutter: Tell MaterialApp to set home to CounterPage
+    Flutter->CounterPage: Create CounterPage widget
+    Flutter->Flutter: Display CounterPage
+```
+
+1. The `main` function tells Flutter to run our application, starting with `CounterApp`.
+2. Flutter creates an instance of the `CounterApp` widget.
+3. The `CounterApp`, which is a `MaterialApp`, is told to set its "home" screen to `CounterPage`.
+4. Flutter creates an instance of the `CounterPage` widget.
+5. Flutter then displays the `CounterPage` on the screen.
+
+It's a simple setup, but crucial for launching our application and presenting the correct initial content.
+
+### Conclusion
+
+In this chapter, we learned that the `CounterApp` is the main wrapper around our entire application. It's responsible for telling Flutter what the main screen should be, which in our case is the [CounterPage](02_counterpage_.md). It achieves this by extending Flutter's built-in `MaterialApp` and setting the `home` property.
+
+Next, we'll dive into the [CounterPage](02_counterpage_.md) itself to see what makes up that initial screen we're displaying.
+
+[Next Chapter: CounterPage](02_counterpage_.md)
+---
+# Chapter 2: CounterPage
+
+Welcome back! In the last chapter, we learned that the [CounterApp](01_counterapp_.md) is like the outer shell of our calculator, and its main job is to show the [CounterPage](02_counterpage_.md) when the app starts. Now, it's time to open up that shell and see what the [CounterPage](02_counterpage_.md) is all about!
+
+Think of the [CounterPage](02_CounterPage.md) as the part of the calculator that contains both the "brain" (the logic that knows how to count) and the "screen" (what you actually see). The [CounterPage](02_counterpage_.md) acts as a helpful helper that makes sure the brain and the screen can talk to each other.
+
+Why do we need this "helper"? In Flutter, our user interface (the screen you see) is made up of "widgets". Sometimes, these widgets need to know about some special "data" or "manager" to work correctly. In our counter app, the "screen" part needs to know about the "brain" part so it can ask it to count up or down. The [CounterPage](02_counterpage_.md) is where we set up this connection.
+
+## What is the CounterPage?
+
+The [CounterPage](02_counterpage_.md) is a simple Flutter widget. Its main purpose is to bring together two other important parts of our counter app:
+
+1.  The **CounterCubit**: This is like the "brain" of our counter. It holds the actual number and has the logic to increase or decrease it. We'll learn more about the [CounterCubit](04_countercubit_.md) in a later chapter.
+2.  The **CounterView**: This is the "screen" part. It displays the current number and has the buttons you press to make the number change. We'll explore the [CounterView](03_counterview_.md) in the next chapter.
+
+The [CounterPage](02_counterpage_.md) doesn't *do* the counting itself, and it doesn't *draw* anything on the screen directly. Its job is just to make sure the [CounterView](03_counterview_.md) has access to the [CounterCubit](04_countercubit_.md).
+
+## Setting Up the Connection with BlocProvider
+
+How does the [CounterPage](02_counterpage_.md) achieve this connection? It uses something called a `BlocProvider`. Don't worry too much about the word "Bloc" for now, it's just a pattern (or a way of organizing code) that helps manage the "brain" part of our app.
+
+The `BlocProvider` is like a special box that can hold our [CounterCubit](04_countercubit_.md). When we put the [CounterCubit](04_countercubit_.md) in the `BlocProvider`, any widget *inside* that `BlocProvider` (like our [CounterView](03_counterview_.md)) can easily find and use the [CounterCubit](04_countercubit_.md).
+
+Let's look at the code for the [CounterPage](02_counterpage_.md):
+
+```dart
+// File: lib/counter/view/counter_page.dart
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // We need this for BlocProvider
+import 'package:flutter_counter/counter/counter.dart'; // Imports CounterCubit and CounterView
+
+// This is our CounterPage widget!
+class CounterPage extends StatelessWidget {
+  const CounterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider( // This is the special box!
+      create: (_) => CounterCubit(), // We create the "brain" and put it in the box
+      child: const CounterView(), // The "screen" (and everything inside it) can access the box
+    );
+  }
+}
+```
+
+Let's break this down:
+
+*   `class CounterPage extends StatelessWidget`: This just means [CounterPage](02_counterpage_.md) is a simple widget that doesn't need to remember anything itself.
+*   `Widget build(BuildContext context)`: Every widget needs this part to describe what it looks like.
+*   `return BlocProvider(...)`: This is the key part! We are returning a `BlocProvider` widget.
+*   `create: (_) => CounterCubit()`: This tells the `BlocProvider` *how* to create the "brain" (the [CounterCubit](04_countercubit_.md)). It creates a new `CounterCubit` whenever the `BlocProvider` is built.
+*   `child: const CounterView()`: This tells the `BlocProvider` that our [CounterView](03_counterview_.md) (the "screen") should be *inside* this `BlocProvider`. This means the [CounterView](03_counterview_.md) can now easily get the `CounterCubit` from the `BlocProvider`.
+
+## How the Connection Works
+
+When the [CounterApp](01_counterapp_.md) tells Flutter to show the [CounterPage](02_counterpage_.md), here's what happens:
+
+```mermaid
+sequenceDiagram
+    participant Flutter as Flutter Framework
+    participant CounterApp as CounterApp
+    participant CounterPage as CounterPage
+    participant BlocProvider as BlocProvider
+    participant CounterCubit as CounterCubit
+    participant CounterView as CounterView
+
+    Flutter->CounterApp: Create CounterApp
+    CounterApp->Flutter: Display CounterPage
+    Flutter->CounterPage: Create CounterPage
+    CounterPage->BlocProvider: Create BlocProvider
+    BlocProvider->CounterCubit: Create CounterCubit (using 'create')
+    BlocProvider->Flutter: Display CounterView (as its child)
+    Flutter->CounterView: Create CounterView
+    CounterView->BlocProvider: Look for CounterCubit (we'll see how in the next chapter!)
+    BlocProvider-->CounterView: Provide CounterCubit
+    Flutter->Flutter: Display CounterView and its content
+```
+
+1.  Flutter starts the app, creating the [CounterApp](01_counterapp_.md).
+2.  The [CounterApp](01_counterapp_.md) tells Flutter to show the [CounterPage](02_counterpage_.md).
+3.  Flutter creates the [CounterPage](02_counterpage_.md) widget.
+4.  Inside its `build` method, the [CounterPage](02_counterpage_.md) creates a `BlocProvider`.
+5.  The `BlocProvider` uses the `create` instruction to make a new [CounterCubit](04_countercubit_.md).
+6.  The `BlocProvider` then tells Flutter to display its "child", which is our [CounterView](03_counterview_.md).
+7.  Flutter creates the [CounterView](03_counterview_.md) widget.
+8.  Now, the [CounterView](03_counterview_.md) can easily find the [CounterCubit](04_countercubit_.md) that was put into the `BlocProvider` by the [CounterPage](02_counterpage_.md). We'll see *how* the [CounterView](03_counterview_.md) does this in the next chapter!
+9.  Finally, Flutter displays the [CounterView](03_counterview_.md) on your screen, and because the [CounterView](03_counterview_.md) has access to the [CounterCubit](04_countercubit_.md), it knows the current count and can ask the [CounterCubit](04_countercubit_.md) to change the number when you press buttons.
+
+## Conclusion
+
+The [CounterPage](02_counterpage_.md) acts as a crucial intermediate step. It's not the visual part (that's the [CounterView](03_counterview_.md)), and it's not the logic part (that's the [CounterCubit](04_countercubit_.md)). Instead, it's the "connector" that creates the [CounterCubit](04_countercubit_.md) and makes it available to the [CounterView](03_counterview_.md) using a `BlocProvider`. This setup is a common way in Flutter to provide important "managers" or "brains" to the parts of your app that need them.
+
+Now that we understand how the [CounterPage](02_counterpage_.md) connects the brain and the screen, let's dive into the "screen" part itself: the [CounterView](03_counterview_.md)!
+
+[Next Chapter: CounterView](03_counterview_.md)
+
+Relevant Code Snippets (Code itself remains unchanged):
+--- File: lib/counter/view/counter_view.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_view}
+/// A [StatelessWidget] which reacts to the provided
+/// [CounterCubit] state and notifies it in response to user input.
+/// {@endtemplate}
+class CounterView extends StatelessWidget {
+  /// {@macro counter_view}
+  const CounterView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Scaffold(
+      body: Center(
+        child: BlocBuilder<CounterCubit, int>(
+          builder: (context, state) {
+            return Text('$state', style: textTheme.displayMedium);
+          },
+        ),
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          FloatingActionButton(
+            key: const Key('counterView_increment_floatingActionButton'),
+            child: const Icon(Icons.add),
+            onPressed: () => context.read<CounterCubit>().increment(),
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton(
+            key: const Key('counterView_decrement_floatingActionButton'),
+            child: const Icon(Icons.remove),
+            onPressed: () => context.read<CounterCubit>().decrement(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+--- File: lib/counter/view/view.dart ---
+export 'counter_page.dart';
+export 'counter_view.dart';
+
+
+--- File: lib/counter/view/counter_page.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_page}
+/// A [StatelessWidget] which is responsible for providing a
+/// [CounterCubit] instance to the [CounterView].
+/// {@endtemplate}
+class CounterPage extends StatelessWidget {
+  /// {@macro counter_page}
+  const CounterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => CounterCubit(),
+      child: const CounterView(),
+    );
+  }
+}
+
+
+Instructions for the chapter (Generate content in English unless specified otherwise):
+- Start with a clear heading (e.g., `# Chapter 3: CounterView
+`). Use the provided concept name.
+
+- If this is not the first chapter, begin with a brief transition from the previous chapter, referencing it with a proper Markdown link using its name.
+
+- Begin with a high-level motivation explaining what problem this abstraction solves. Start with a central use case as a concrete example. The whole chapter should guide the reader to understand how to solve this use case. Make it very minimal and friendly to beginners.
+
+- If the abstraction is complex, break it down into key concepts. Explain each concept one-by-one in a very beginner-friendly way.
+
+- Explain how to use this abstraction to solve the use case. Give example inputs and outputs for code snippets (if the output isn't values, describe at a high level what will happen).
+
+- Each code block should be BELOW 10 lines! If longer code blocks are needed, break them down into smaller pieces and walk through them one-by-one. Aggresively simplify the code to make it minimal. Use comments to skip non-important implementation details. Each code block should have a beginner friendly explanation right after it.
+
+- Describe the internal implementation to help understand what's under the hood. First provide a non-code or code-light walkthrough on what happens step-by-step when the abstraction is called. It's recommended to use a simple sequenceDiagram with a dummy example - keep it minimal with at most 5 participants to ensure clarity. If participant name has space, use: `participant QP as Query Processing`. .
+
+- Then dive deeper into code for the internal implementation with references to files. Provide example code blocks, but make them similarly simple and beginner-friendly. Explain.
+
+- IMPORTANT: When you need to refer to other core abstractions covered in other chapters, ALWAYS use proper Markdown links like this: [Chapter Title](filename.md). Use the Complete Tutorial Structure above to find the correct filename and the chapter title. Translate the surrounding text.
+
+- Use mermaid diagrams to illustrate complex concepts (```mermaid``` format). .
+
+- Heavily use analogies and examples throughout to help beginners understand.
+
+- End the chapter with a brief conclusion that summarizes what was learned and provides a transition to the next chapter. If there is a next chapter, use a proper Markdown link: [Next Chapter Title](next_chapter_filename).
+
+- Ensure the tone is welcoming and easy for a newcomer to understand.
+
+- Output *only* the Markdown content for this chapter.
+
+Now, directly provide a super beginner-friendly Markdown output (DON'T need ```markdown``` tags):
+
+2025-05-27 15:02:00,351 - INFO - RESPONSE: # Chapter 3: CounterView
+
+Welcome back, aspiring Flutter developers! In the last chapter, we saw how the [CounterPage](02_counterpage_.md) acts as the "connector," setting up our "brain" ([CounterCubit](04_countercubit_.md)) and making it available to the "screen" part using `BlocProvider`. Now, let's finally look at that "screen" part!
+
+Think of the [CounterView](03_counterview_.md) as the actual display and buttons on your calculator. It's what you *see* and what you *interact* with. It shows the current number and lets you press buttons to make that number go up or down.
+
+The [CounterView](03_counterview_.md) has two main jobs:
+
+1.  **Display the number:** It needs to get the current count from the "brain" ([CounterCubit](04_countercubit_.md)) and show it on the screen.
+2.  **Listen for button taps:** When you press the "+" or "-" button, it needs to tell the "brain" ([CounterCubit](04_countercubit_.md)) to update the number.
+
+The amazing part is that the [CounterView](03_counterview_.md) doesn't need to know *how* the counting happens. It just needs to know *what* the current count is and *how* to ask the brain to change it.
+
+## What is CounterView?
+
+The [CounterView](03_counterview_.md) is a standard Flutter widget that describes the visual layout of our counter screen. In our project, it's a `StatelessWidget`, meaning it doesn't need to manage its own internal state (like remembering the count itself, that's the job of the [CounterCubit](04_countercubit_.md)!).
+
+It uses other Flutter widgets like `Scaffold`, `Center`, `Text`, and `FloatingActionButton` to build the user interface you see.
+
+Let's look at the important parts of the [CounterView](03_counterview_.md) code. Remember, it's the "screen" part!
+
+### Building the User Interface
+
+```dart
+// File: lib/counter/view/counter_view.dart
+
+// ... imports and CounterView class definition ...
+
+@override
+Widget build(BuildContext context) {
+  final textTheme = Theme.of(context).textTheme;
+  return Scaffold( // Basic layout structure
+    body: Center( // Centers the content
+      child: BlocBuilder<CounterCubit, int>( // This reacts to changes in the brain!
+        builder: (context, state) {
+          return Text('$state', style: textTheme.displayMedium); // Displays the count
+        },
+      ),
+    ),
+    // ... Floating action buttons below ...
+  );
+}
+
+// ... rest of the code ...
+```
+
+This is the `build` method of our `CounterView`. It describes what the screen looks like:
+
+*   `Scaffold`: Provides a basic visual structure (like a standard page with a body and optional floating buttons).
+*   `Center`: Puts whatever is inside it right in the middle of the screen.
+*   `BlocBuilder<CounterCubit, int>`: This is a special widget provided by the `flutter_bloc` library. This is how our "screen" (the [CounterView](03_counterview_.md)) listens to the "brain" ([CounterCubit](04_countercubit_.md)).
+    *   `<CounterCubit, int>` tells the `BlocBuilder` that it's looking for a `CounterCubit` and that the `CounterCubit` holds an `int` (an integer, which is our count).
+    *   The `builder` part is like a little instruction telling the `BlocBuilder` what to draw whenever the `CounterCubit`'s state (the count) changes. The `state` variable inside the `builder` gives us the *current* most recent value from the `CounterCubit`.
+*   `Text('$state', ...)`: This displays the actual count on the screen. The `$state` part shows the current number we got from the `CounterCubit`.
+
+So, the `BlocBuilder` is the bridge that allows the [CounterView](03_counterview_.md) to automatically update the displayed number whenever the [CounterCubit](04_countercubit_.md)'s value changes.
+
+### Adding Buttons
+
+Now, let's look at the buttons:
+
+```dart
+// File: lib/counter/view/counter_view.dart
+
+// ... previous code ...
+
+floatingActionButton: Column( // Arranges buttons vertically
+  mainAxisAlignment: MainAxisAlignment.end, // Puts them at the bottom
+  crossAxisAlignment: CrossAxisAlignment.end, // Aligns them to the right
+  children: <Widget>[
+    FloatingActionButton( // The '+' button
+      key: const Key('counterView_increment_floatingActionButton'),
+      child: const Icon(Icons.add),
+      onPressed: () => context.read<CounterCubit>().increment(), // Tell the brain to increment!
+    ),
+    const SizedBox(height: 8), // Adds a small space between buttons
+    FloatingActionButton( // The '-' button
+      key: const Key('counterView_decrement_floatingActionButton'),
+      child: const Icon(Icons.remove),
+      onPressed: () => context.read<CounterCubit>().decrement(), // Tell the brain to decrement!
+    ),
+  ],
+),
+// ... rest of the code ...
+```
+
+This part adds the two round buttons you see at the bottom right of the screen:
+
+*   `floatingActionButton`: This is a standard property of the `Scaffold` widget to place "floating" buttons.
+*   `Column`: Arranges the buttons one below the other.
+*   `FloatingActionButton`: These are the actual circular buttons.
+*   `child: const Icon(...)`: Puts the "+" or "-" icon inside the button.
+*   `onPressed`: This is the most important part for interaction! It tells Flutter what to do when the button is tapped.
+    *   `() => context.read<CounterCubit>().increment()`: When the "+" button is pressed, this line finds the `CounterCubit` (remember, it was provided by the [CounterPage](02_counterpage_.md) using `BlocProvider`!) and calls its `increment()` method. This is how the "screen" tells the "brain" to count up!
+    *   `() => context.read<CounterCubit>().decrement()`: Similarly, when the "-" button is pressed, this finds the `CounterCubit` and calls its `decrement()` method.
+
+The `context.read<CounterCubit>()` part is how a widget inside a `BlocProvider` can access the "brain" ([CounterCubit](04_countercubit_.md)) that was put there by its higher-level widget (the [CounterPage](02_counterpage_.md)). The `context` is like the widget's address book, and `.read<CounterCubit>()` asks that address book to find the `CounterCubit` that's available.
+
+## How CounterView Interacts
+
+Here's how the [CounterView](03_counterview_.md) talks to the [CounterCubit](04_countercubit_.md):
+
+When the app starts and the [CounterView](03_counterview_.md) is displayed:
+
+```mermaid
+sequenceDiagram
+    participant CounterView as CounterView (Screen)
+    participant BlocBuilder as BlocBuilder
+    participant CounterCubit as CounterCubit (Brain)
+    participant Flutter as Flutter Framework
+
+    CounterView->BlocBuilder: Use BlocBuilder to listen to CounterCubit
+    BlocBuilder->CounterCubit: Subscribe to state changes
+    CounterCubit-->BlocBuilder: Send initial state (e.g., 0)
+    BlocBuilder->Flutter: Rebuild and display current state using builder
+    Flutter->CounterView: Update text on screen
+```
+
+1.  The [CounterView](03_counterView.md) is built and uses `BlocBuilder` to watch the `CounterCubit`.
+2.  `BlocBuilder` starts listening to the `CounterCubit` for any changes in its state (the count).
+3.  Initially, the `CounterCubit` sends its starting state (usually 0) to the `BlocBuilder`.
+4.  The `BlocBuilder` uses the `builder` function to create a `Text` widget showing that initial state.
+5.  Flutter displays this text on the screen.
+
+When a button is pressed:
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant CounterView as CounterView (Screen)
+    participant CounterCubit as CounterCubit (Brain)
+    participant BlocBuilder as BlocBuilder
+    participant Flutter as Flutter Framework
+
+    User->CounterView: Tap a button (e.g., '+')
+    CounterView->CounterCubit: Call increment() via context.read()
+    CounterCubit->CounterCubit: Update its internal state (e.g., from 0 to 1)
+    CounterCubit-->BlocBuilder: Emit the new state (1)
+    BlocBuilder->Flutter: Rebuild and display new state using builder
+    Flutter->CounterView: Update text on screen (from 0 to 1)
+```
+
+1.  The user taps one of the buttons on the [CounterView](03_counterView.md).
+2.  The `onPressed` function is triggered, using `context.read<CounterCubit>()` to find the `CounterCubit` and calls `increment()` or `decrement()`.
+3.  The `CounterCubit` updates its internal number.
+4.  Since `BlocBuilder` was listening, the `CounterCubit` automatically sends the *new* number to the `BlocBuilder`.
+5.  The `BlocBuilder` sees the new number and uses its `builder` function to create an *updated* `Text` widget showing the new number.
+6.  Flutter updates the screen to show the new number.
+
+This happens without the [CounterView](03_counterView.md) manually telling the text to change! The `BlocBuilder` handles the "rebuilding" part automatically whenever the `CounterCubit`'s state changes.
+
+## Conclusion
+
+The [CounterView](03_counterView.md) is the visual face of our counter app. It uses Flutter widgets to display the current count and provide buttons for the user to interact with. The key concepts here are:
+
+*   Using `BlocBuilder` to listen for changes in the "brain" ([CounterCubit](04_countercubit_.md)) and automatically update the display.
+*   Using `context.read<CounterCubit>()` in the button's `onPressed` to find the "brain" and tell it to perform an action (`increment` or `decrement`).
+
+The [CounterView](03_CounterView.md) is purely about presentation and interaction. It doesn't hold the counting logic itself; it delegates that responsibility to the [CounterCubit](04_countercubit_.md).
+
+Next, we'll finally dive into the "brain" itself: the [CounterCubit](04_countercubit_.md)! We'll see how it stores the number and how those `increment()` and `decrement()` methods actually work.
+
+[Next Chapter: CounterCubit](04_countercubit_.md)
+2025-05-27 15:02:00,355 - INFO - PROMPT: 
+Write a very beginner-friendly tutorial chapter (in Markdown format) for the project `flutter_counter` about the concept: "CounterCubit
+". This is Chapter 4.
+
+Concept Details:
+- Name: CounterCubit
+
+- Description:
+Think of the CounterCubit as the "brain" of our counter. It holds the actual number (the state) and knows how to increase or decrease it when asked. It's like a simple calculator that can only add or subtract.
+
+
+Complete Tutorial Structure:
+1. [CounterApp
+](01_counterapp_.md)
+2. [CounterPage
+](02_counterpage_.md)
+3. [CounterView
+](03_counterview_.md)
+4. [CounterCubit
+](04_countercubit_.md)
+5. [BlocObserver
+](05_blocobserver_.md)
+
+Context from previous chapters:
+# Chapter 1: CounterApp
+
+Welcome to the wonderful world of Flutter and our `flutter_counter` project! In this first chapter, we're going to talk about the very foundation of our application: the `CounterApp`. Think of the `CounterApp` like the outside shell or the main structure of a physical calculator. It's what you hold in your hand and it contains everything inside.
+
+So, what does the `CounterApp` actually *do* for us? It's the main entry point of our application. When you run your Flutter app, the `CounterApp` is the very first thing that gets created and displayed. Its main job is to tell Flutter which "screen" or "page" to show when the app starts.
+
+In our `flutter_counter` project, the `CounterApp` is responsible for showing the "Counter Page" as the main screen. We'll learn more about the [CounterPage](02_counterpage_.md) in the next chapter, but for now, just imagine it's the part of the calculator where you see the numbers.
+
+Let's look at the code that makes this happen.
+
+### Setting up the App
+
+All Flutter apps start execution in the `main` function. This function is like the initial power button for your calculator.
+
+```dart
+// File: lib/main.dart
+
+import 'package:bloc/bloc.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_counter/app.dart';
+import 'package:flutter_counter/counter_observer.dart';
+
+void main() {
+  Bloc.observer = const CounterObserver(); // We'll talk about this later!
+  runApp(const CounterApp()); // This is where the magic happens!
+}
+```
+
+In this simple code snippet, the most important line for understanding `CounterApp` is `runApp(const CounterApp());`. This tells Flutter to build and display the `CounterApp` widget. Widgets are the building blocks of Flutter's user interface, like individual buttons or text labels, but `CounterApp` is a special kind of widget that defines the overall structure of the app.
+
+### What is `CounterApp`?
+
+Now let's peek inside the `CounterApp` code itself. Remember, think of `CounterApp` as the outer casing of our calculator.
+
+```dart
+// File: lib/app.dart
+
+import 'package:flutter/material.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_app}
+/// A [MaterialApp] which sets the `home` to [CounterPage].
+/// {@endtemplate}
+class CounterApp extends MaterialApp {
+  /// {@macro counter_app}
+  const CounterApp({super.key}) : super(home: const CounterPage());
+}
+```
+
+This looks a bit different from what you might expect! The `CounterApp` class *extends* (or inherits from) `MaterialApp`. `MaterialApp` is a special widget provided by Flutter that provides a lot of the basic structure and styling that you expect in a standard mobile app using Google's "Material Design". It handles things like themes, navigation, and setting the initial screen.
+
+The key part here is `: super(home: const CounterPage())`. This is how `CounterApp` tells the `MaterialApp` what to display first. It's saying, "Dear `MaterialApp`, when you start up, please show the `CounterPage`!". The `home` property of `MaterialApp` is where you set the primary screen of your application.
+
+So, the `CounterApp` isn't doing a lot of heavy lifting itself. Its main job is to use the `MaterialApp` provided by Flutter and configure it to display our [CounterPage](02_counterpage_.md) as the starting point.
+
+### How It All Flows Together
+
+Let's visualize the simple flow when our app starts:
+
+```mermaid
+sequenceDiagram
+    participant Main as main() function
+    participant Flutter as Flutter Framework
+    participant CounterApp as CounterApp
+    participant CounterPage as CounterPage
+
+    Main->Flutter: runApp(CounterApp)
+    Flutter->CounterApp: Create CounterApp widget
+    CounterApp->Flutter: Tell MaterialApp to set home to CounterPage
+    Flutter->CounterPage: Create CounterPage widget
+    Flutter->Flutter: Display CounterPage
+```
+
+1. The `main` function tells Flutter to run our application, starting with `CounterApp`.
+2. Flutter creates an instance of the `CounterApp` widget.
+3. The `CounterApp`, which is a `MaterialApp`, is told to set its "home" screen to `CounterPage`.
+4. Flutter creates an instance of the `CounterPage` widget.
+5. Flutter then displays the `CounterPage` on the screen.
+
+It's a simple setup, but crucial for launching our application and presenting the correct initial content.
+
+### Conclusion
+
+In this chapter, we learned that the `CounterApp` is the main wrapper around our entire application. It's responsible for telling Flutter what the main screen should be, which in our case is the [CounterPage](02_counterpage_.md). It achieves this by extending Flutter's built-in `MaterialApp` and setting the `home` property.
+
+Next, we'll dive into the [CounterPage](02_counterpage_.md) itself to see what makes up that initial screen we're displaying.
+
+[Next Chapter: CounterPage](02_counterpage_.md)
+---
+# Chapter 2: CounterPage
+
+Welcome back! In the last chapter, we learned that the [CounterApp](01_counterapp_.md) is like the outer shell of our calculator, and its main job is to show the [CounterPage](02_counterpage_.md) when the app starts. Now, it's time to open up that shell and see what the [CounterPage](02_counterpage_.md) is all about!
+
+Think of the [CounterPage](02_CounterPage.md) as the part of the calculator that contains both the "brain" (the logic that knows how to count) and the "screen" (what you actually see). The [CounterPage](02_counterpage_.md) acts as a helpful helper that makes sure the brain and the screen can talk to each other.
+
+Why do we need this "helper"? In Flutter, our user interface (the screen you see) is made up of "widgets". Sometimes, these widgets need to know about some special "data" or "manager" to work correctly. In our counter app, the "screen" part needs to know about the "brain" part so it can ask it to count up or down. The [CounterPage](02_counterpage_.md) is where we set up this connection.
+
+## What is the CounterPage?
+
+The [CounterPage](02_counterpage_.md) is a simple Flutter widget. Its main purpose is to bring together two other important parts of our counter app:
+
+1.  The **CounterCubit**: This is like the "brain" of our counter. It holds the actual number and has the logic to increase or decrease it. We'll learn more about the [CounterCubit](04_countercubit_.md) in a later chapter.
+2.  The **CounterView**: This is the "screen" part. It displays the current number and has the buttons you press to make the number change. We'll explore the [CounterView](03_counterview_.md) in the next chapter.
+
+The [CounterPage](02_counterpage_.md) doesn't *do* the counting itself, and it doesn't *draw* anything on the screen directly. Its job is just to make sure the [CounterView](03_counterview_.md) has access to the [CounterCubit](04_countercubit_.md).
+
+## Setting Up the Connection with BlocProvider
+
+How does the [CounterPage](02_counterpage_.md) achieve this connection? It uses something called a `BlocProvider`. Don't worry too much about the word "Bloc" for now, it's just a pattern (or a way of organizing code) that helps manage the "brain" part of our app.
+
+The `BlocProvider` is like a special box that can hold our [CounterCubit](04_countercubit_.md). When we put the [CounterCubit](04_countercubit_.md) in the `BlocProvider`, any widget *inside* that `BlocProvider` (like our [CounterView](03_counterview_.md)) can easily find and use the [CounterCubit](04_countercubit_.md).
+
+Let's look at the code for the [CounterPage](02_counterpage_.md):
+
+```dart
+// File: lib/counter/view/counter_page.dart
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // We need this for BlocProvider
+import 'package:flutter_counter/counter/counter.dart'; // Imports CounterCubit and CounterView
+
+// This is our CounterPage widget!
+class CounterPage extends StatelessWidget {
+  const CounterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider( // This is the special box!
+      create: (_) => CounterCubit(), // We create the "brain" and put it in the box
+      child: const CounterView(), // The "screen" (and everything inside it) can access the box
+    );
+  }
+}
+```
+
+Let's break this down:
+
+*   `class CounterPage extends StatelessWidget`: This just means [CounterPage](02_counterpage_.md) is a simple widget that doesn't need to remember anything itself.
+*   `Widget build(BuildContext context)`: Every widget needs this part to describe what it looks like.
+*   `return BlocProvider(...)`: This is the key part! We are returning a `BlocProvider` widget.
+*   `create: (_) => CounterCubit()`: This tells the `BlocProvider` *how* to create the "brain" (the [CounterCubit](04_countercubit_.md)). It creates a new `CounterCubit` whenever the `BlocProvider` is built.
+*   `child: const CounterView()`: This tells the `BlocProvider` that our [CounterView](03_counterview_.md) (the "screen") should be *inside* this `BlocProvider`. This means the [CounterView](03_counterview_.md) can now easily get the `CounterCubit` from the `BlocProvider`.
+
+## How the Connection Works
+
+When the [CounterApp](01_counterapp_.md) tells Flutter to show the [CounterPage](02_counterpage_.md), here's what happens:
+
+```mermaid
+sequenceDiagram
+    participant Flutter as Flutter Framework
+    participant CounterApp as CounterApp
+    participant CounterPage as CounterPage
+    participant BlocProvider as BlocProvider
+    participant CounterCubit as CounterCubit
+    participant CounterView as CounterView
+
+    Flutter->CounterApp: Create CounterApp
+    CounterApp->Flutter: Display CounterPage
+    Flutter->CounterPage: Create CounterPage
+    CounterPage->BlocProvider: Create BlocProvider
+    BlocProvider->CounterCubit: Create CounterCubit (using 'create')
+    BlocProvider->Flutter: Display CounterView (as its child)
+    Flutter->CounterView: Create CounterView
+    CounterView->BlocProvider: Look for CounterCubit (we'll see how in the next chapter!)
+    BlocProvider-->CounterView: Provide CounterCubit
+    Flutter->Flutter: Display CounterView and its content
+```
+
+1.  Flutter starts the app, creating the [CounterApp](01_counterapp_.md).
+2.  The [CounterApp](01_counterapp_.md) tells Flutter to show the [CounterPage](02_counterpage_.md).
+3.  Flutter creates the [CounterPage](02_counterpage_.md) widget.
+4.  Inside its `build` method, the [CounterPage](02_counterpage_.md) creates a `BlocProvider`.
+5.  The `BlocProvider` uses the `create` instruction to make a new [CounterCubit](04_countercubit_.md).
+6.  The `BlocProvider` then tells Flutter to display its "child", which is our [CounterView](03_counterview_.md).
+7.  Flutter creates the [CounterView](03_counterview_.md) widget.
+8.  Now, the [CounterView](03_counterview_.md) can easily find the [CounterCubit](04_countercubit_.md) that was put into the `BlocProvider` by the [CounterPage](02_counterpage_.md). We'll see *how* the [CounterView](03_counterview_.md) does this in the next chapter!
+9.  Finally, Flutter displays the [CounterView](03_counterview_.md) on your screen, and because the [CounterView](03_counterview_.md) has access to the [CounterCubit](04_countercubit_.md), it knows the current count and can ask the [CounterCubit](04_countercubit_.md) to change the number when you press buttons.
+
+## Conclusion
+
+The [CounterPage](02_counterpage_.md) acts as a crucial intermediate step. It's not the visual part (that's the [CounterView](03_counterview_.md)), and it's not the logic part (that's the [CounterCubit](04_countercubit_.md)). Instead, it's the "connector" that creates the [CounterCubit](04_countercubit_.md) and makes it available to the [CounterView](03_counterview_.md) using a `BlocProvider`. This setup is a common way in Flutter to provide important "managers" or "brains" to the parts of your app that need them.
+
+Now that we understand how the [CounterPage](02_counterpage_.md) connects the brain and the screen, let's dive into the "screen" part itself: the [CounterView](03_counterview_.md)!
+
+[Next Chapter: CounterView](03_counterview_.md)
+---
+# Chapter 3: CounterView
+
+Welcome back, aspiring Flutter developers! In the last chapter, we saw how the [CounterPage](02_counterpage_.md) acts as the "connector," setting up our "brain" ([CounterCubit](04_countercubit_.md)) and making it available to the "screen" part using `BlocProvider`. Now, let's finally look at that "screen" part!
+
+Think of the [CounterView](03_counterview_.md) as the actual display and buttons on your calculator. It's what you *see* and what you *interact* with. It shows the current number and lets you press buttons to make that number go up or down.
+
+The [CounterView](03_counterview_.md) has two main jobs:
+
+1.  **Display the number:** It needs to get the current count from the "brain" ([CounterCubit](04_countercubit_.md)) and show it on the screen.
+2.  **Listen for button taps:** When you press the "+" or "-" button, it needs to tell the "brain" ([CounterCubit](04_countercubit_.md)) to update the number.
+
+The amazing part is that the [CounterView](03_counterview_.md) doesn't need to know *how* the counting happens. It just needs to know *what* the current count is and *how* to ask the brain to change it.
+
+## What is CounterView?
+
+The [CounterView](03_counterview_.md) is a standard Flutter widget that describes the visual layout of our counter screen. In our project, it's a `StatelessWidget`, meaning it doesn't need to manage its own internal state (like remembering the count itself, that's the job of the [CounterCubit](04_countercubit_.md)!).
+
+It uses other Flutter widgets like `Scaffold`, `Center`, `Text`, and `FloatingActionButton` to build the user interface you see.
+
+Let's look at the important parts of the [CounterView](03_counterview_.md) code. Remember, it's the "screen" part!
+
+### Building the User Interface
+
+```dart
+// File: lib/counter/view/counter_view.dart
+
+// ... imports and CounterView class definition ...
+
+@override
+Widget build(BuildContext context) {
+  final textTheme = Theme.of(context).textTheme;
+  return Scaffold( // Basic layout structure
+    body: Center( // Centers the content
+      child: BlocBuilder<CounterCubit, int>( // This reacts to changes in the brain!
+        builder: (context, state) {
+          return Text('$state', style: textTheme.displayMedium); // Displays the count
+        },
+      ),
+    ),
+    // ... Floating action buttons below ...
+  );
+}
+
+// ... rest of the code ...
+```
+
+This is the `build` method of our `CounterView`. It describes what the screen looks like:
+
+*   `Scaffold`: Provides a basic visual structure (like a standard page with a body and optional floating buttons).
+*   `Center`: Puts whatever is inside it right in the middle of the screen.
+*   `BlocBuilder<CounterCubit, int>`: This is a special widget provided by the `flutter_bloc` library. This is how our "screen" (the [CounterView](03_counterview_.md)) listens to the "brain" ([CounterCubit](04_countercubit_.md)).
+    *   `<CounterCubit, int>` tells the `BlocBuilder` that it's looking for a `CounterCubit` and that the `CounterCubit` holds an `int` (an integer, which is our count).
+    *   The `builder` part is like a little instruction telling the `BlocBuilder` what to draw whenever the `CounterCubit`'s state (the count) changes. The `state` variable inside the `builder` gives us the *current* most recent value from the `CounterCubit`.
+*   `Text('$state', ...)`: This displays the actual count on the screen. The `$state` part shows the current number we got from the `CounterCubit`.
+
+So, the `BlocBuilder` is the bridge that allows the [CounterView](03_counterview_.md) to automatically update the displayed number whenever the [CounterCubit](04_countercubit_.md)'s value changes.
+
+### Adding Buttons
+
+Now, let's look at the buttons:
+
+```dart
+// File: lib/counter/view/counter_view.dart
+
+// ... previous code ...
+
+floatingActionButton: Column( // Arranges buttons vertically
+  mainAxisAlignment: MainAxisAlignment.end, // Puts them at the bottom
+  crossAxisAlignment: CrossAxisAlignment.end, // Aligns them to the right
+  children: <Widget>[
+    FloatingActionButton( // The '+' button
+      key: const Key('counterView_increment_floatingActionButton'),
+      child: const Icon(Icons.add),
+      onPressed: () => context.read<CounterCubit>().increment(), // Tell the brain to increment!
+    ),
+    const SizedBox(height: 8), // Adds a small space between buttons
+    FloatingActionButton( // The '-' button
+      key: const Key('counterView_decrement_floatingActionButton'),
+      child: const Icon(Icons.remove),
+      onPressed: () => context.read<CounterCubit>().decrement(), // Tell the brain to decrement!
+    ),
+  ],
+),
+// ... rest of the code ...
+```
+
+This part adds the two round buttons you see at the bottom right of the screen:
+
+*   `floatingActionButton`: This is a standard property of the `Scaffold` widget to place "floating" buttons.
+*   `Column`: Arranges the buttons one below the other.
+*   `FloatingActionButton`: These are the actual circular buttons.
+*   `child: const Icon(...)`: Puts the "+" or "-" icon inside the button.
+*   `onPressed`: This is the most important part for interaction! It tells Flutter what to do when the button is tapped.
+    *   `() => context.read<CounterCubit>().increment()`: When the "+" button is pressed, this line finds the `CounterCubit` (remember, it was provided by the [CounterPage](02_counterpage_.md) using `BlocProvider`!) and calls its `increment()` method. This is how the "screen" tells the "brain" to count up!
+    *   `() => context.read<CounterCubit>().decrement()`: Similarly, when the "-" button is pressed, this finds the `CounterCubit` and calls its `decrement()` method.
+
+The `context.read<CounterCubit>()` part is how a widget inside a `BlocProvider` can access the "brain" ([CounterCubit](04_countercubit_.md)) that was put there by its higher-level widget (the [CounterPage](02_counterpage_.md)). The `context` is like the widget's address book, and `.read<CounterCubit>()` asks that address book to find the `CounterCubit` that's available.
+
+## How CounterView Interacts
+
+Here's how the [CounterView](03_counterview_.md) talks to the [CounterCubit](04_countercubit_.md):
+
+When the app starts and the [CounterView](03_counterview_.md) is displayed:
+
+```mermaid
+sequenceDiagram
+    participant CounterView as CounterView (Screen)
+    participant BlocBuilder as BlocBuilder
+    participant CounterCubit as CounterCubit (Brain)
+    participant Flutter as Flutter Framework
+
+    CounterView->BlocBuilder: Use BlocBuilder to listen to CounterCubit
+    BlocBuilder->CounterCubit: Subscribe to state changes
+    CounterCubit-->BlocBuilder: Send initial state (e.g., 0)
+    BlocBuilder->Flutter: Rebuild and display current state using builder
+    Flutter->CounterView: Update text on screen
+```
+
+1.  The [CounterView](03_counterView.md) is built and uses `BlocBuilder` to watch the `CounterCubit`.
+2.  `BlocBuilder` starts listening to the `CounterCubit` for any changes in its state (the count).
+3.  Initially, the `CounterCubit` sends its starting state (usually 0) to the `BlocBuilder`.
+4.  The `BlocBuilder` uses the `builder` function to create a `Text` widget showing that initial state.
+5.  Flutter displays this text on the screen.
+
+When a button is pressed:
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant CounterView as CounterView (Screen)
+    participant CounterCubit as CounterCubit (Brain)
+    participant BlocBuilder as BlocBuilder
+    participant Flutter as Flutter Framework
+
+    User->CounterView: Tap a button (e.g., '+')
+    CounterView->CounterCubit: Call increment() via context.read()
+    CounterCubit->CounterCubit: Update its internal state (e.g., from 0 to 1)
+    CounterCubit-->BlocBuilder: Emit the new state (1)
+    BlocBuilder->Flutter: Rebuild and display new state using builder
+    Flutter->CounterView: Update text on screen (from 0 to 1)
+```
+
+1.  The user taps one of the buttons on the [CounterView](03_counterView.md).
+2.  The `onPressed` function is triggered, using `context.read<CounterCubit>()` to find the `CounterCubit` and calls `increment()` or `decrement()`.
+3.  The `CounterCubit` updates its internal number.
+4.  Since `BlocBuilder` was listening, the `CounterCubit` automatically sends the *new* number to the `BlocBuilder`.
+5.  The `BlocBuilder` sees the new number and uses its `builder` function to create an *updated* `Text` widget showing the new number.
+6.  Flutter updates the screen to show the new number.
+
+This happens without the [CounterView](03_counterView.md) manually telling the text to change! The `BlocBuilder` handles the "rebuilding" part automatically whenever the `CounterCubit`'s state changes.
+
+## Conclusion
+
+The [CounterView](03_counterView.md) is the visual face of our counter app. It uses Flutter widgets to display the current count and provide buttons for the user to interact with. The key concepts here are:
+
+*   Using `BlocBuilder` to listen for changes in the "brain" ([CounterCubit](04_countercubit_.md)) and automatically update the display.
+*   Using `context.read<CounterCubit>()` in the button's `onPressed` to find the "brain" and tell it to perform an action (`increment` or `decrement`).
+
+The [CounterView](03_CounterView.md) is purely about presentation and interaction. It doesn't hold the counting logic itself; it delegates that responsibility to the [CounterCubit](04_countercubit_.md).
+
+Next, we'll finally dive into the "brain" itself: the [CounterCubit](04_countercubit_.md)! We'll see how it stores the number and how those `increment()` and `decrement()` methods actually work.
+
+[Next Chapter: CounterCubit](04_countercubit_.md)
+
+Relevant Code Snippets (Code itself remains unchanged):
+--- File: lib/counter/counter.dart ---
+export 'cubit/counter_cubit.dart';
+export 'view/view.dart';
+
+
+--- File: lib/counter/cubit/counter_cubit.dart ---
+import 'package:bloc/bloc.dart';
+
+/// {@template counter_cubit}
+/// A [Cubit] which manages an [int] as its state.
+/// {@endtemplate}
+class CounterCubit extends Cubit<int> {
+  /// {@macro counter_cubit}
+  CounterCubit() : super(0);
+
+  /// Add 1 to the current state.
+  void increment() => emit(state + 1);
+
+  /// Subtract 1 from the current state.
+  void decrement() => emit(state - 1);
+}
+
+
+--- File: lib/counter/view/counter_view.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_view}
+/// A [StatelessWidget] which reacts to the provided
+/// [CounterCubit] state and notifies it in response to user input.
+/// {@endtemplate}
+class CounterView extends StatelessWidget {
+  /// {@macro counter_view}
+  const CounterView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Scaffold(
+      body: Center(
+        child: BlocBuilder<CounterCubit, int>(
+          builder: (context, state) {
+            return Text('$state', style: textTheme.displayMedium);
+          },
+        ),
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          FloatingActionButton(
+            key: const Key('counterView_increment_floatingActionButton'),
+            child: const Icon(Icons.add),
+            onPressed: () => context.read<CounterCubit>().increment(),
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton(
+            key: const Key('counterView_decrement_floatingActionButton'),
+            child: const Icon(Icons.remove),
+            onPressed: () => context.read<CounterCubit>().decrement(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+--- File: lib/counter/view/counter_page.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_page}
+/// A [StatelessWidget] which is responsible for providing a
+/// [CounterCubit] instance to the [CounterView].
+/// {@endtemplate}
+class CounterPage extends StatelessWidget {
+  /// {@macro counter_page}
+  const CounterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => CounterCubit(),
+      child: const CounterView(),
+    );
+  }
+}
+
+
+Instructions for the chapter (Generate content in English unless specified otherwise):
+- Start with a clear heading (e.g., `# Chapter 4: CounterCubit
+`). Use the provided concept name.
+
+- If this is not the first chapter, begin with a brief transition from the previous chapter, referencing it with a proper Markdown link using its name.
+
+- Begin with a high-level motivation explaining what problem this abstraction solves. Start with a central use case as a concrete example. The whole chapter should guide the reader to understand how to solve this use case. Make it very minimal and friendly to beginners.
+
+- If the abstraction is complex, break it down into key concepts. Explain each concept one-by-one in a very beginner-friendly way.
+
+- Explain how to use this abstraction to solve the use case. Give example inputs and outputs for code snippets (if the output isn't values, describe at a high level what will happen).
+
+- Each code block should be BELOW 10 lines! If longer code blocks are needed, break them down into smaller pieces and walk through them one-by-one. Aggresively simplify the code to make it minimal. Use comments to skip non-important implementation details. Each code block should have a beginner friendly explanation right after it.
+
+- Describe the internal implementation to help understand what's under the hood. First provide a non-code or code-light walkthrough on what happens step-by-step when the abstraction is called. It's recommended to use a simple sequenceDiagram with a dummy example - keep it minimal with at most 5 participants to ensure clarity. If participant name has space, use: `participant QP as Query Processing`. .
+
+- Then dive deeper into code for the internal implementation with references to files. Provide example code blocks, but make them similarly simple and beginner-friendly. Explain.
+
+- IMPORTANT: When you need to refer to other core abstractions covered in other chapters, ALWAYS use proper Markdown links like this: [Chapter Title](filename.md). Use the Complete Tutorial Structure above to find the correct filename and the chapter title. Translate the surrounding text.
+
+- Use mermaid diagrams to illustrate complex concepts (```mermaid``` format). .
+
+- Heavily use analogies and examples throughout to help beginners understand.
+
+- End the chapter with a brief conclusion that summarizes what was learned and provides a transition to the next chapter. If there is a next chapter, use a proper Markdown link: [Next Chapter Title](next_chapter_filename).
+
+- Ensure the tone is welcoming and easy for a newcomer to understand.
+
+- Output *only* the Markdown content for this chapter.
+
+Now, directly provide a super beginner-friendly Markdown output (DON'T need ```markdown``` tags):
+
+2025-05-27 15:02:14,712 - INFO - RESPONSE: # Chapter 4: CounterCubit
+
+Welcome back! In the last two chapters, we looked at the [CounterPage](02_counterpage_.md) (the connector) and the [CounterView](03_counterview_.md) (the screen and buttons). We saw how the [CounterView](03_counterview_.md) used `BlocBuilder` to show the number and `context.read<CounterCubit>()` to ask the "brain" to change the number. But we still haven't seen the "brain" itself!
+
+This chapter is all about the **CounterCubit**, which is the "brain" of our simple counter application. Think of it as a special manager that holds the actual count and knows how to perform the *only* two actions our counter needs: increasing the number and decreasing the number. It's like having a little assistant whose only job is to remember the count and add or subtract one when you tell it to.
+
+The problem the `CounterCubit` solves is keeping track of the count *separately* from the part that displays the number. Why is this good? Because the display part ([CounterView](03_counterview_.md)) doesn't need to worry about the counting logic, and the counting logic (CounterCubit) doesn't need to worry about how the number is shown on the screen. They can focus on their own jobs, making the code easier to understand and manage!
+
+## What is CounterCubit?
+
+The `CounterCubit` is a special type of class from the `bloc` library (which `flutter_bloc` uses). A Cubit is basically a simple way to manage "state" (data that changes, like our count) and provide ways to change that state.
+
+In our case, the "state" that the `CounterCubit` manages is just a single number (an integer, `int`).
+
+Let's look at the basic structure of our `CounterCubit`:
+
+```dart
+// File: lib/counter/cubit/counter_cubit.dart
+
+import 'package:bloc/bloc.dart'; // Need this for Cubit
+
+/// Our CounterCubit class
+class CounterCubit extends Cubit<int> {
+  /// When we create a CounterCubit, its starting state (the count) is 0.
+  CounterCubit() : super(0);
+
+  // Methods to change the state go here...
+}
+```
+
+*   `class CounterCubit extends Cubit<int>`: This tells Flutter that `CounterCubit` is a Cubit, and the `<int>` part says that the type of data it will hold and manage (its "state") is an integer.
+*   `CounterCubit() : super(0);`: This is how we create a new `CounterCubit`. `: super(0)` is special code that tells the `Cubit` parent class to start with an initial state of `0`.
+
+So, right when a `CounterCubit` is created (which happens in the [CounterPage](02_counterpage_.md) when it's put into the `BlocProvider`), its internal count is set to 0.
+
+## How it Changes the State: `emit()`
+
+The main job of a `Cubit` is to *emit* new states when something happens. When we say "emit", think of it like the `CounterCubit` sending out a signal saying, "Hey, my number has changed! Here's the new value!". Any widget that's listening with a `BlocBuilder` (like our [CounterView](03_counterview_.md)) will hear this signal and update itself.
+
+How does the `CounterCubit` emit a new state? With the `emit()` method.
+
+Let's add the `increment()` method to our `CounterCubit`:
+
+```dart
+// File: lib/counter/cubit/counter_cubit.dart
+
+// ... previous code ...
+
+class CounterCubit extends Cubit<int> {
+  CounterCubit() : super(0);
+
+  /// Add 1 to the current state.
+  void increment() {
+    // state is the current number held by the Cubit
+    // emit() tells listeners the new number
+    emit(state + 1);
+  }
+
+  // decrement() method goes here...
+}
+```
+
+*   `void increment()`: This is the method that the [CounterView](03_counterview_.md) calls when the "+" button is pressed. It's a `void` method because it doesn't return a value; its job is just to update the state.
+*   `emit(state + 1)`: This is the core!
+    *   `state`: Inside the `CounterCubit`, `state` always represents the *current* number the Cubit is holding.
+    *   `state + 1`: This calculates the *next* number by adding 1 to the current number.
+    *   `emit(...)`: This takes the result of the calculation (`state + 1`) and *emits* it as the *new* state of the `CounterCubit`.
+
+When `emit()` is called, two important things happen:
+1. The Cubit's internal `state` value is updated to the new number (e.g., 0 becomes 1).
+2. A signal is sent out to anyone listening (like our `BlocBuilder` in the [CounterView](03_counterview_.md)) that the state has changed.
+
+Now, let's add the `decrement()` method:
+
+```dart
+// File: lib/counter/cubit/counter_cubit.dart
+
+// ... previous code ...
+
+class CounterCubit extends Cubit<int> {
+  CounterCubit() : super(0);
+
+  void increment() => emit(state + 1); // Shorter way to write it!
+
+  /// Subtract 1 from the current state.
+  void decrement() {
+    // state is the current number
+    // emit() tells listeners the new number
+    emit(state - 1);
+  }
+}
+```
+
+*   `void decrement()`: Called when the "-" button is pressed on the [CounterView](03_counterview_.md).
+*   `emit(state - 1)`: Calculates the next state by subtracting 1 from the current `state` and then `emit()`s this new state.
+
+And that's it for the core logic of the `CounterCubit`! It's very simple: it just holds an integer and has two methods to add or subtract 1 from that integer, emitting the new value each time.
+
+## How it Works with the View
+
+Let's revisit the flow from our previous chapter, now focusing on the `CounterCubit`'s role.
+
+When you tap the "+" button on the [CounterView](03_counterview_.md):
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant CounterView as CounterView (Screen)
+    participant CounterCubit as CounterCubit (Brain)
+    participant BlocBuilder as BlocBuilder
+    participant Flutter as Flutter Framework
+
+    User->CounterView: Tap '+' button
+    CounterView->CounterCubit: Call increment()
+    CounterCubit->CounterCubit: Read current state (e.g., 0)
+    CounterCubit->CounterCubit: Calculate new state (0 + 1 = 1)
+    CounterCubit-->BlocBuilder: Emit new state (1)
+    BlocBuilder->Flutter: Tell Flutter to rebuild the UI that depends on CounterCubit
+    Flutter->CounterView: Rebuild the Text widget with new state (1)
+    Flutter->User: Display updated count (1)
+```
+
+1.  The user taps the "+" button on the CounterView.
+2.  The `onPressed` function calls `context.read<CounterCubit>().increment()`.
+3.  The `increment()` method in the `CounterCubit` is executed.
+4.  Inside `increment()`, the current `state` (let's say it's 0) is read.
+5.  The new state (`0 + 1 = 1`) is calculated.
+6.  `emit(1)` is called. This updates the `CounterCubit`'s internal state to 1 AND sends a signal to the `BlocBuilder` listening in the [CounterView](03_counterview_.md).
+7.  The `BlocBuilder` receives the new state (1).
+8.  The `BlocBuilder` tells Flutter that the UI dependent on this state needs to be rebuilt.
+9.  Flutter rebuilds the part of the [CounterView](03_counterview_.md) inside the `BlocBuilder`'s `builder` function.
+10. The `Text` widget is created again, but this time the `state` variable inside the `builder` is 1, so it displays "1".
+11. The user sees the count updated on the screen.
+
+The same process happens for `decrement()`, but `emit(state - 1)` is called instead.
+
+The `CounterCubit` is purely about managing the state (the number) and providing methods to change it. It has *no* knowledge of the user interface; it doesn't know or care that it's being displayed as text or changed by a button. It just updates its internal value and emits the new state.
+
+## Conclusion
+
+In this chapter, we met the "brain" of our counter: the **CounterCubit**. We learned that it's a simple class that holds the current count as its "state" and uses the `emit()` method to update that state and notify anyone listening. The `increment()` and `decrement()` methods provide the ways to change the count. The `CounterCubit` is intentionally simple, focusing only on the counting logic, while relying on the [CounterView](03_counterview_.md) to handle the display and user interaction.
+
+Now that we understand how the state is managed and updated, we'll look at one final piece of the puzzle: the [BlocObserver](05_blocobserver_.md), which helps us see *when* the state changes are happening.
+
+[Next Chapter: BlocObserver](05_blocobserver_.md)
+2025-05-27 15:02:14,719 - INFO - PROMPT: 
+Write a very beginner-friendly tutorial chapter (in Markdown format) for the project `flutter_counter` about the concept: "BlocObserver
+". This is Chapter 5.
+
+Concept Details:
+- Name: BlocObserver
+
+- Description:
+The BlocObserver is like a silent reporter who watches everything the CounterCubit does. Every time the number in the CounterCubit changes, the observer makes a note of it and prints it out. It's helpful for understanding how the state changes over time.
+
+
+Complete Tutorial Structure:
+1. [CounterApp
+](01_counterapp_.md)
+2. [CounterPage
+](02_counterpage_.md)
+3. [CounterView
+](03_counterview_.md)
+4. [CounterCubit
+](04_countercubit_.md)
+5. [BlocObserver
+](05_blocobserver_.md)
+
+Context from previous chapters:
+# Chapter 1: CounterApp
+
+Welcome to the wonderful world of Flutter and our `flutter_counter` project! In this first chapter, we're going to talk about the very foundation of our application: the `CounterApp`. Think of the `CounterApp` like the outside shell or the main structure of a physical calculator. It's what you hold in your hand and it contains everything inside.
+
+So, what does the `CounterApp` actually *do* for us? It's the main entry point of our application. When you run your Flutter app, the `CounterApp` is the very first thing that gets created and displayed. Its main job is to tell Flutter which "screen" or "page" to show when the app starts.
+
+In our `flutter_counter` project, the `CounterApp` is responsible for showing the "Counter Page" as the main screen. We'll learn more about the [CounterPage](02_counterpage_.md) in the next chapter, but for now, just imagine it's the part of the calculator where you see the numbers.
+
+Let's look at the code that makes this happen.
+
+### Setting up the App
+
+All Flutter apps start execution in the `main` function. This function is like the initial power button for your calculator.
+
+```dart
+// File: lib/main.dart
+
+import 'package:bloc/bloc.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_counter/app.dart';
+import 'package:flutter_counter/counter_observer.dart';
+
+void main() {
+  Bloc.observer = const CounterObserver(); // We'll talk about this later!
+  runApp(const CounterApp()); // This is where the magic happens!
+}
+```
+
+In this simple code snippet, the most important line for understanding `CounterApp` is `runApp(const CounterApp());`. This tells Flutter to build and display the `CounterApp` widget. Widgets are the building blocks of Flutter's user interface, like individual buttons or text labels, but `CounterApp` is a special kind of widget that defines the overall structure of the app.
+
+### What is `CounterApp`?
+
+Now let's peek inside the `CounterApp` code itself. Remember, think of `CounterApp` as the outer casing of our calculator.
+
+```dart
+// File: lib/app.dart
+
+import 'package:flutter/material.dart';
+import 'package:flutter_counter/counter/counter.dart';
+
+/// {@template counter_app}
+/// A [MaterialApp] which sets the `home` to [CounterPage].
+/// {@endtemplate}
+class CounterApp extends MaterialApp {
+  /// {@macro counter_app}
+  const CounterApp({super.key}) : super(home: const CounterPage());
+}
+```
+
+This looks a bit different from what you might expect! The `CounterApp` class *extends* (or inherits from) `MaterialApp`. `MaterialApp` is a special widget provided by Flutter that provides a lot of the basic structure and styling that you expect in a standard mobile app using Google's "Material Design". It handles things like themes, navigation, and setting the initial screen.
+
+The key part here is `: super(home: const CounterPage())`. This is how `CounterApp` tells the `MaterialApp` what to display first. It's saying, "Dear `MaterialApp`, when you start up, please show the `CounterPage`!". The `home` property of `MaterialApp` is where you set the primary screen of your application.
+
+So, the `CounterApp` isn't doing a lot of heavy lifting itself. Its main job is to use the `MaterialApp` provided by Flutter and configure it to display our [CounterPage](02_counterpage_.md) as the starting point.
+
+### How It All Flows Together
+
+Let's visualize the simple flow when our app starts:
+
+```mermaid
+sequenceDiagram
+    participant Main as main() function
+    participant Flutter as Flutter Framework
+    participant CounterApp as CounterApp
+    participant CounterPage as CounterPage
+
+    Main->Flutter: runApp(CounterApp)
+    Flutter->CounterApp: Create CounterApp widget
+    CounterApp->Flutter: Tell MaterialApp to set home to CounterPage
+    Flutter->CounterPage: Create CounterPage widget
+    Flutter->Flutter: Display CounterPage
+```
+
+1. The `main` function tells Flutter to run our application, starting with `CounterApp`.
+2. Flutter creates an instance of the `CounterApp` widget.
+3. The `CounterApp`, which is a `MaterialApp`, is told to set its "home" screen to `CounterPage`.
+4. Flutter creates an instance of the `CounterPage` widget.
+5. Flutter then displays the `CounterPage` on the screen.
+
+It's a simple setup, but crucial for launching our application and presenting the correct initial content.
+
+### Conclusion
+
+In this chapter, we learned that the `CounterApp` is the main wrapper around our entire application. It's responsible for telling Flutter what the main screen should be, which in our case is the [CounterPage](02_counterpage_.md). It achieves this by extending Flutter's built-in `MaterialApp` and setting the `home` property.
+
+Next, we'll dive into the [CounterPage](02_counterpage_.md) itself to see what makes up that initial screen we're displaying.
+
+[Next Chapter: CounterPage](02_counterpage_.md)
+---
+# Chapter 2: CounterPage
+
+Welcome back! In the last chapter, we learned that the [CounterApp](01_counterapp_.md) is like the outer shell of our calculator, and its main job is to show the [CounterPage](02_counterpage_.md) when the app starts. Now, it's time to open up that shell and see what the [CounterPage](02_counterpage_.md) is all about!
+
+Think of the [CounterPage](02_CounterPage.md) as the part of the calculator that contains both the "brain" (the logic that knows how to count) and the "screen" (what you actually see). The [CounterPage](02_counterpage_.md) acts as a helpful helper that makes sure the brain and the screen can talk to each other.
+
+Why do we need this "helper"? In Flutter, our user interface (the screen you see) is made up of "widgets". Sometimes, these widgets need to know about some special "data" or "manager" to work correctly. In our counter app, the "screen" part needs to know about the "brain" part so it can ask it to count up or down. The [CounterPage](02_counterpage_.md) is where we set up this connection.
+
+## What is the CounterPage?
+
+The [CounterPage](02_counterpage_.md) is a simple Flutter widget. Its main purpose is to bring together two other important parts of our counter app:
+
+1.  The **CounterCubit**: This is like the "brain" of our counter. It holds the actual number and has the logic to increase or decrease it. We'll learn more about the [CounterCubit](04_countercubit_.md) in a later chapter.
+2.  The **CounterView**: This is the "screen" part. It displays the current number and has the buttons you press to make the number change. We'll explore the [CounterView](03_counterview_.md) in the next chapter.
+
+The [CounterPage](02_counterpage_.md) doesn't *do* the counting itself, and it doesn't *draw* anything on the screen directly. Its job is just to make sure the [CounterView](03_counterview_.md) has access to the [CounterCubit](04_countercubit_.md).
+
+## Setting Up the Connection with BlocProvider
+
+How does the [CounterPage](02_counterpage_.md) achieve this connection? It uses something called a `BlocProvider`. Don't worry too much about the word "Bloc" for now, it's just a pattern (or a way of organizing code) that helps manage the "brain" part of our app.
+
+The `BlocProvider` is like a special box that can hold our [CounterCubit](04_countercubit_.md). When we put the [CounterCubit](04_countercubit_.md) in the `BlocProvider`, any widget *inside* that `BlocProvider` (like our [CounterView](03_counterview_.md)) can easily find and use the [CounterCubit](04_countercubit_.md).
+
+Let's look at the code for the [CounterPage](02_counterpage_.md):
+
+```dart
+// File: lib/counter/view/counter_page.dart
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // We need this for BlocProvider
+import 'package:flutter_counter/counter/counter.dart'; // Imports CounterCubit and CounterView
+
+// This is our CounterPage widget!
+class CounterPage extends StatelessWidget {
+  const CounterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider( // This is the special box!
+      create: (_) => CounterCubit(), // We create the "brain" and put it in the box
+      child: const CounterView(), // The "screen" (and everything inside it) can access the box
+    );
+  }
+}
+```
+
+Let's break this down:
+
+*   `class CounterPage extends StatelessWidget`: This just means [CounterPage](02_counterpage_.md) is a simple widget that doesn't need to remember anything itself.
+*   `Widget build(BuildContext context)`: Every widget needs this part to describe what it looks like.
+*   `return BlocProvider(...)`: This is the key part! We are returning a `BlocProvider` widget.
+*   `create: (_) => CounterCubit()`: This tells the `BlocProvider` *how* to create the "brain" (the [CounterCubit](04_countercubit_.md)). It creates a new `CounterCubit` whenever the `BlocProvider` is built.
+*   `child: const CounterView()`: This tells the `BlocProvider` that our [CounterView](03_counterview_.md) (the "screen") should be *inside* this `BlocProvider`. This means the [CounterView](03_counterview_.md) can now easily get the `CounterCubit` from the `BlocProvider`.
+
+## How the Connection Works
+
+When the [CounterApp](01_counterapp_.md) tells Flutter to show the [CounterPage](02_counterpage_.md), here's what happens:
+
+```mermaid
+sequenceDiagram
+    participant Flutter as Flutter Framework
+    participant CounterApp as CounterApp
+    participant CounterPage as CounterPage
+    participant BlocProvider as BlocProvider
+    participant CounterCubit as CounterCubit
+    participant CounterView as CounterView
+
+    Flutter->CounterApp: Create CounterApp
+    CounterApp->Flutter: Display CounterPage
+    Flutter->CounterPage: Create CounterPage
+    CounterPage->BlocProvider: Create BlocProvider
+    BlocProvider->CounterCubit: Create CounterCubit (using 'create')
+    BlocProvider->Flutter: Display CounterView (as its child)
+    Flutter->CounterView: Create CounterView
+    CounterView->BlocProvider: Look for CounterCubit (we'll see how in the next chapter!)
+    BlocProvider-->CounterView: Provide CounterCubit
+    Flutter->Flutter: Display CounterView and its content
+```
+
+1.  Flutter starts the app, creating the [CounterApp](01_counterapp_.md).
+2.  The [CounterApp](01_counterapp_.md) tells Flutter to show the [CounterPage](02_counterpage_.md).
+3.  Flutter creates the [CounterPage](02_counterpage_.md) widget.
+4.  Inside its `build` method, the [CounterPage](02_counterpage_.md) creates a `BlocProvider`.
+5.  The `BlocProvider` uses the `create` instruction to make a new [CounterCubit](04_countercubit_.md).
+6.  The `BlocProvider` then tells Flutter to display its "child", which is our [CounterView](03_counterview_.md).
+7.  Flutter creates the [CounterView](03_counterview_.md) widget.
+8.  Now, the [CounterView](03_counterview_.md) can easily find the [CounterCubit](04_countercubit_.md) that was put into the `BlocProvider` by the [CounterPage](02_counterpage_.md). We'll see *how* the [CounterView](03_counterview_.md) does this in the next chapter!
+9.  Finally, Flutter displays the [CounterView](03_counterview_.md) on your screen, and because the [CounterView](03_counterview_.md) has access to the [CounterCubit](04_countercubit_.md), it knows the current count and can ask the [CounterCubit](04_countercubit_.md) to change the number when you press buttons.
+
+## Conclusion
+
+The [CounterPage](02_counterpage_.md) acts as a crucial intermediate step. It's not the visual part (that's the [CounterView](03_counterview_.md)), and it's not the logic part (that's the [CounterCubit](04_countercubit_.md)). Instead, it's the "connector" that creates the [CounterCubit](04_countercubit_.md) and makes it available to the [CounterView](03_counterview_.md) using a `BlocProvider`. This setup is a common way in Flutter to provide important "managers" or "brains" to the parts of your app that need them.
+
+Now that we understand how the [CounterPage](02_counterpage_.md) connects the brain and the screen, let's dive into the "screen" part itself: the [CounterView](03_counterview_.md)!
+
+[Next Chapter: CounterView](03_counterview_.md)
+---
+# Chapter 3: CounterView
+
+Welcome back, aspiring Flutter developers! In the last chapter, we saw how the [CounterPage](02_counterpage_.md) acts as the "connector," setting up our "brain" ([CounterCubit](04_countercubit_.md)) and making it available to the "screen" part using `BlocProvider`. Now, let's finally look at that "screen" part!
+
+Think of the [CounterView](03_counterview_.md) as the actual display and buttons on your calculator. It's what you *see* and what you *interact* with. It shows the current number and lets you press buttons to make that number go up or down.
+
+The [CounterView](03_counterview_.md) has two main jobs:
+
+1.  **Display the number:** It needs to get the current count from the "brain" ([CounterCubit](04_countercubit_.md)) and show it on the screen.
+2.  **Listen for button taps:** When you press the "+" or "-" button, it needs to tell the "brain" ([CounterCubit](04_countercubit_.md)) to update the number.
+
+The amazing part is that the [CounterView](03_counterview_.md) doesn't need to know *how* the counting happens. It just needs to know *what* the current count is and *how* to ask the brain to change it.
+
+## What is CounterView?
+
+The [CounterView](03_counterview_.md) is a standard Flutter widget that describes the visual layout of our counter screen. In our project, it's a `StatelessWidget`, meaning it doesn't need to manage its own internal state (like remembering the count itself, that's the job of the [CounterCubit](04_countercubit_.md)!).
+
+It uses other Flutter widgets like `Scaffold`, `Center`, `Text`, and `FloatingActionButton` to build the user interface you see.
+
+Let's look at the important parts of the [CounterView](03_counterview_.md) code. Remember, it's the "screen" part!
+
+### Building the User Interface
+
+```dart
+// File: lib/counter/view/counter_view.dart
+
+// ... imports and CounterView class definition ...
+
+@override
+Widget build(BuildContext context) {
+  final textTheme = Theme.of(context).textTheme;
+  return Scaffold( // Basic layout structure
+    body: Center( // Centers the content
+      child: BlocBuilder<CounterCubit, int>( // This reacts to changes in the brain!
+        builder: (context, state) {
+          return Text('$state', style: textTheme.displayMedium); // Displays the count
+        },
+      ),
+    ),
+    // ... Floating action buttons below ...
+  );
+}
+
+// ... rest of the code ...
+```
+
+This is the `build` method of our `CounterView`. It describes what the screen looks like:
+
+*   `Scaffold`: Provides a basic visual structure (like a standard page with a body and optional floating buttons).
+*   `Center`: Puts whatever is inside it right in the middle of the screen.
+*   `BlocBuilder<CounterCubit, int>`: This is a special widget provided by the `flutter_bloc` library. This is how our "screen" (the [CounterView](03_counterview_.md)) listens to the "brain" ([CounterCubit](04_countercubit_.md)).
+    *   `<CounterCubit, int>` tells the `BlocBuilder` that it's looking for a `CounterCubit` and that the `CounterCubit` holds an `int` (an integer, which is our count).
+    *   The `builder` part is like a little instruction telling the `BlocBuilder` what to draw whenever the `CounterCubit`'s state (the count) changes. The `state` variable inside the `builder` gives us the *current* most recent value from the `CounterCubit`.
+*   `Text('$state', ...)`: This displays the actual count on the screen. The `$state` part shows the current number we got from the `CounterCubit`.
+
+So, the `BlocBuilder` is the bridge that allows the [CounterView](03_counterview_.md) to automatically update the displayed number whenever the [CounterCubit](04_countercubit_.md)'s value changes.
+
+### Adding Buttons
+
+Now, let's look at the buttons:
+
+```dart
+// File: lib/counter/view/counter_view.dart
+
+// ... previous code ...
+
+floatingActionButton: Column( // Arranges buttons vertically
+  mainAxisAlignment: MainAxisAlignment.end, // Puts them at the bottom
+  crossAxisAlignment: CrossAxisAlignment.end, // Aligns them to the right
+  children: <Widget>[
+    FloatingActionButton( // The '+' button
+      key: const Key('counterView_increment_floatingActionButton'),
+      child: const Icon(Icons.add),
+      onPressed: () => context.read<CounterCubit>().increment(), // Tell the brain to increment!
+    ),
+    const SizedBox(height: 8), // Adds a small space between buttons
+    FloatingActionButton( // The '-' button
+      key: const Key('counterView_decrement_floatingActionButton'),
+      child: const Icon(Icons.remove),
+      onPressed: () => context.read<CounterCubit>().decrement(), // Tell the brain to decrement!
+    ),
+  ],
+),
+// ... rest of the code ...
+```
+
+This part adds the two round buttons you see at the bottom right of the screen:
+
+*   `floatingActionButton`: This is a standard property of the `Scaffold` widget to place "floating" buttons.
+*   `Column`: Arranges the buttons one below the other.
+*   `FloatingActionButton`: These are the actual circular buttons.
+*   `child: const Icon(...)`: Puts the "+" or "-" icon inside the button.
+*   `onPressed`: This is the most important part for interaction! It tells Flutter what to do when the button is tapped.
+    *   `() => context.read<CounterCubit>().increment()`: When the "+" button is pressed, this line finds the `CounterCubit` (remember, it was provided by the [CounterPage](02_counterpage_.md) using `BlocProvider`!) and calls its `increment()` method. This is how the "screen" tells the "brain" to count up!
+    *   `() => context.read<CounterCubit>().decrement()`: Similarly, when the "-" button is pressed, this finds the `CounterCubit` and calls its `decrement()` method.
+
+The `context.read<CounterCubit>()` part is how a widget inside a `BlocProvider` can access the "brain" ([CounterCubit](04_countercubit_.md)) that was put there by its higher-level widget (the [CounterPage](02_counterpage_.md)). The `context` is like the widget's address book, and `.read<CounterCubit>()` asks that address book to find the `CounterCubit` that's available.
+
+## How CounterView Interacts
+
+Here's how the [CounterView](03_counterview_.md) talks to the [CounterCubit](04_countercubit_.md):
+
+When the app starts and the [CounterView](03_counterview_.md) is displayed:
+
+```mermaid
+sequenceDiagram
+    participant CounterView as CounterView (Screen)
+    participant BlocBuilder as BlocBuilder
+    participant CounterCubit as CounterCubit (Brain)
+    participant Flutter as Flutter Framework
+
+    CounterView->BlocBuilder: Use BlocBuilder to listen to CounterCubit
+    BlocBuilder->CounterCubit: Subscribe to state changes
+    CounterCubit-->BlocBuilder: Send initial state (e.g., 0)
+    BlocBuilder->Flutter: Rebuild and display current state using builder
+    Flutter->CounterView: Update text on screen
+```
+
+1.  The [CounterView](03_counterView.md) is built and uses `BlocBuilder` to watch the `CounterCubit`.
+2.  `BlocBuilder` starts listening to the `CounterCubit` for any changes in its state (the count).
+3.  Initially, the `CounterCubit` sends its starting state (usually 0) to the `BlocBuilder`.
+4.  The `BlocBuilder` uses the `builder` function to create a `Text` widget showing that initial state.
+5.  Flutter displays this text on the screen.
+
+When a button is pressed:
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant CounterView as CounterView (Screen)
+    participant CounterCubit as CounterCubit (Brain)
+    participant BlocBuilder as BlocBuilder
+    participant Flutter as Flutter Framework
+
+    User->CounterView: Tap a button (e.g., '+')
+    CounterView->CounterCubit: Call increment() via context.read()
+    CounterCubit->CounterCubit: Update its internal state (e.g., from 0 to 1)
+    CounterCubit-->BlocBuilder: Emit the new state (1)
+    BlocBuilder->Flutter: Rebuild and display new state using builder
+    Flutter->CounterView: Update text on screen (from 0 to 1)
+```
+
+1.  The user taps one of the buttons on the [CounterView](03_counterView.md).
+2.  The `onPressed` function is triggered, using `context.read<CounterCubit>()` to find the `CounterCubit` and calls `increment()` or `decrement()`.
+3.  The `CounterCubit` updates its internal number.
+4.  Since `BlocBuilder` was listening, the `CounterCubit` automatically sends the *new* number to the `BlocBuilder`.
+5.  The `BlocBuilder` sees the new number and uses its `builder` function to create an *updated* `Text` widget showing the new number.
+6.  Flutter updates the screen to show the new number.
+
+This happens without the [CounterView](03_counterView.md) manually telling the text to change! The `BlocBuilder` handles the "rebuilding" part automatically whenever the `CounterCubit`'s state changes.
+
+## Conclusion
+
+The [CounterView](03_counterView.md) is the visual face of our counter app. It uses Flutter widgets to display the current count and provide buttons for the user to interact with. The key concepts here are:
+
+*   Using `BlocBuilder` to listen for changes in the "brain" ([CounterCubit](04_countercubit_.md)) and automatically update the display.
+*   Using `context.read<CounterCubit>()` in the button's `onPressed` to find the "brain" and tell it to perform an action (`increment` or `decrement`).
+
+The [CounterView](03_CounterView.md) is purely about presentation and interaction. It doesn't hold the counting logic itself; it delegates that responsibility to the [CounterCubit](04_countercubit_.md).
+
+Next, we'll finally dive into the "brain" itself: the [CounterCubit](04_countercubit_.md)! We'll see how it stores the number and how those `increment()` and `decrement()` methods actually work.
+
+[Next Chapter: CounterCubit](04_countercubit_.md)
+---
+# Chapter 4: CounterCubit
+
+Welcome back! In the last two chapters, we looked at the [CounterPage](02_counterpage_.md) (the connector) and the [CounterView](03_counterview_.md) (the screen and buttons). We saw how the [CounterView](03_counterview_.md) used `BlocBuilder` to show the number and `context.read<CounterCubit>()` to ask the "brain" to change the number. But we still haven't seen the "brain" itself!
+
+This chapter is all about the **CounterCubit**, which is the "brain" of our simple counter application. Think of it as a special manager that holds the actual count and knows how to perform the *only* two actions our counter needs: increasing the number and decreasing the number. It's like having a little assistant whose only job is to remember the count and add or subtract one when you tell it to.
+
+The problem the `CounterCubit` solves is keeping track of the count *separately* from the part that displays the number. Why is this good? Because the display part ([CounterView](03_counterview_.md)) doesn't need to worry about the counting logic, and the counting logic (CounterCubit) doesn't need to worry about how the number is shown on the screen. They can focus on their own jobs, making the code easier to understand and manage!
+
+## What is CounterCubit?
+
+The `CounterCubit` is a special type of class from the `bloc` library (which `flutter_bloc` uses). A Cubit is basically a simple way to manage "state" (data that changes, like our count) and provide ways to change that state.
+
+In our case, the "state" that the `CounterCubit` manages is just a single number (an integer, `int`).
+
+Let's look at the basic structure of our `CounterCubit`:
+
+```dart
+// File: lib/counter/cubit/counter_cubit.dart
+
+import 'package:bloc/bloc.dart'; // Need this for Cubit
+
+/// Our CounterCubit class
+class CounterCubit extends Cubit<int> {
+  /// When we create a CounterCubit, its starting state (the count) is 0.
+  CounterCubit() : super(0);
+
+  // Methods to change the state go here...
+}
+```
+
+*   `class CounterCubit extends Cubit<int>`: This tells Flutter that `CounterCubit` is a Cubit, and the `<int>` part says that the type of data it will hold and manage (its "state") is an integer.
+*   `CounterCubit() : super(0);`: This is how we create a new `CounterCubit`. `: super(0)` is special code that tells the `Cubit` parent class to start with an initial state of `0`.
+
+So, right when a `CounterCubit` is created (which happens in the [CounterPage](02_counterpage_.md) when it's put into the `BlocProvider`), its internal count is set to 0.
+
+## How it Changes the State: `emit()`
+
+The main job of a `Cubit` is to *emit* new states when something happens. When we say "emit", think of it like the `CounterCubit` sending out a signal saying, "Hey, my number has changed! Here's the new value!". Any widget that's listening with a `BlocBuilder` (like our [CounterView](03_counterview_.md)) will hear this signal and update itself.
+
+How does the `CounterCubit` emit a new state? With the `emit()` method.
+
+Let's add the `increment()` method to our `CounterCubit`:
+
+```dart
+// File: lib/counter/cubit/counter_cubit.dart
+
+// ... previous code ...
+
+class CounterCubit extends Cubit<int> {
+  CounterCubit() : super(0);
+
+  /// Add 1 to the current state.
+  void increment() {
+    // state is the current number held by the Cubit
+    // emit() tells listeners the new number
+    emit(state + 1);
+  }
+
+  // decrement() method goes here...
+}
+```
+
+*   `void increment()`: This is the method that the [CounterView](03_counterview_.md) calls when the "+" button is pressed. It's a `void` method because it doesn't return a value; its job is just to update the state.
+*   `emit(state + 1)`: This is the core!
+    *   `state`: Inside the `CounterCubit`, `state` always represents the *current* number the Cubit is holding.
+    *   `state + 1`: This calculates the *next* number by adding 1 to the current number.
+    *   `emit(...)`: This takes the result of the calculation (`state + 1`) and *emits* it as the *new* state of the `CounterCubit`.
+
+When `emit()` is called, two important things happen:
+1. The Cubit's internal `state` value is updated to the new number (e.g., 0 becomes 1).
+2. A signal is sent out to anyone listening (like our `BlocBuilder` in the [CounterView](03_counterview_.md)) that the state has changed.
+
+Now, let's add the `decrement()` method:
+
+```dart
+// File: lib/counter/cubit/counter_cubit.dart
+
+// ... previous code ...
+
+class CounterCubit extends Cubit<int> {
+  CounterCubit() : super(0);
+
+  void increment() => emit(state + 1); // Shorter way to write it!
+
+  /// Subtract 1 from the current state.
+  void decrement() {
+    // state is the current number
+    // emit() tells listeners the new number
+    emit(state - 1);
+  }
+}
+```
+
+*   `void decrement()`: Called when the "-" button is pressed on the [CounterView](03_counterview_.md).
+*   `emit(state - 1)`: Calculates the next state by subtracting 1 from the current `state` and then `emit()`s this new state.
+
+And that's it for the core logic of the `CounterCubit`! It's very simple: it just holds an integer and has two methods to add or subtract 1 from that integer, emitting the new value each time.
+
+## How it Works with the View
+
+Let's revisit the flow from our previous chapter, now focusing on the `CounterCubit`'s role.
+
+When you tap the "+" button on the [CounterView](03_counterview_.md):
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant CounterView as CounterView (Screen)
+    participant CounterCubit as CounterCubit (Brain)
+    participant BlocBuilder as BlocBuilder
+    participant Flutter as Flutter Framework
+
+    User->CounterView: Tap '+' button
+    CounterView->CounterCubit: Call increment()
+    CounterCubit->CounterCubit: Read current state (e.g., 0)
+    CounterCubit->CounterCubit: Calculate new state (0 + 1 = 1)
+    CounterCubit-->BlocBuilder: Emit new state (1)
+    BlocBuilder->Flutter: Tell Flutter to rebuild the UI that depends on CounterCubit
+    Flutter->CounterView: Rebuild the Text widget with new state (1)
+    Flutter->User: Display updated count (1)
+```
+
+1.  The user taps the "+" button on the CounterView.
+2.  The `onPressed` function calls `context.read<CounterCubit>().increment()`.
+3.  The `increment()` method in the `CounterCubit` is executed.
+4.  Inside `increment()`, the current `state` (let's say it's 0) is read.
+5.  The new state (`0 + 1 = 1`) is calculated.
+6.  `emit(1)` is called. This updates the `CounterCubit`'s internal state to 1 AND sends a signal to the `BlocBuilder` listening in the [CounterView](03_counterview_.md).
+7.  The `BlocBuilder` receives the new state (1).
+8.  The `BlocBuilder` tells Flutter that the UI dependent on this state needs to be rebuilt.
+9.  Flutter rebuilds the part of the [CounterView](03_counterview_.md) inside the `BlocBuilder`'s `builder` function.
+10. The `Text` widget is created again, but this time the `state` variable inside the `builder` is 1, so it displays "1".
+11. The user sees the count updated on the screen.
+
+The same process happens for `decrement()`, but `emit(state - 1)` is called instead.
+
+The `CounterCubit` is purely about managing the state (the number) and providing methods to change it. It has *no* knowledge of the user interface; it doesn't know or care that it's being displayed as text or changed by a button. It just updates its internal value and emits the new state.
+
+## Conclusion
+
+In this chapter, we met the "brain" of our counter: the **CounterCubit**. We learned that it's a simple class that holds the current count as its "state" and uses the `emit()` method to update that state and notify anyone listening. The `increment()` and `decrement()` methods provide the ways to change the count. The `CounterCubit` is intentionally simple, focusing only on the counting logic, while relying on the [CounterView](03_counterview_.md) to handle the display and user interaction.
+
+Now that we understand how the state is managed and updated, we'll look at one final piece of the puzzle: the [BlocObserver](05_blocobserver_.md), which helps us see *when* the state changes are happening.
+
+[Next Chapter: BlocObserver](05_blocobserver_.md)
+
+Relevant Code Snippets (Code itself remains unchanged):
+--- File: lib/counter_observer.dart ---
+import 'package:bloc/bloc.dart';
+
+/// {@template counter_observer}
+/// [BlocObserver] for the counter application which
+/// observes all state changes.
+/// {@endtemplate}
+class CounterObserver extends BlocObserver {
+  /// {@macro counter_observer}
+  const CounterObserver();
+
+  @override
+  void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
+    super.onChange(bloc, change);
+    // ignore: avoid_print
+    print('${bloc.runtimeType} $change');
+  }
+}
+
+
+--- File: lib/main.dart ---
+import 'package:bloc/bloc.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_counter/app.dart';
+import 'package:flutter_counter/counter_observer.dart';
+
+void main() {
+  Bloc.observer = const CounterObserver();
+  runApp(const CounterApp());
+}
+
+
+Instructions for the chapter (Generate content in English unless specified otherwise):
+- Start with a clear heading (e.g., `# Chapter 5: BlocObserver
+`). Use the provided concept name.
+
+- If this is not the first chapter, begin with a brief transition from the previous chapter, referencing it with a proper Markdown link using its name.
+
+- Begin with a high-level motivation explaining what problem this abstraction solves. Start with a central use case as a concrete example. The whole chapter should guide the reader to understand how to solve this use case. Make it very minimal and friendly to beginners.
+
+- If the abstraction is complex, break it down into key concepts. Explain each concept one-by-one in a very beginner-friendly way.
+
+- Explain how to use this abstraction to solve the use case. Give example inputs and outputs for code snippets (if the output isn't values, describe at a high level what will happen).
+
+- Each code block should be BELOW 10 lines! If longer code blocks are needed, break them down into smaller pieces and walk through them one-by-one. Aggresively simplify the code to make it minimal. Use comments to skip non-important implementation details. Each code block should have a beginner friendly explanation right after it.
+
+- Describe the internal implementation to help understand what's under the hood. First provide a non-code or code-light walkthrough on what happens step-by-step when the abstraction is called. It's recommended to use a simple sequenceDiagram with a dummy example - keep it minimal with at most 5 participants to ensure clarity. If participant name has space, use: `participant QP as Query Processing`. .
+
+- Then dive deeper into code for the internal implementation with references to files. Provide example code blocks, but make them similarly simple and beginner-friendly. Explain.
+
+- IMPORTANT: When you need to refer to other core abstractions covered in other chapters, ALWAYS use proper Markdown links like this: [Chapter Title](filename.md). Use the Complete Tutorial Structure above to find the correct filename and the chapter title. Translate the surrounding text.
+
+- Use mermaid diagrams to illustrate complex concepts (```mermaid``` format). .
+
+- Heavily use analogies and examples throughout to help beginners understand.
+
+- End the chapter with a brief conclusion that summarizes what was learned and provides a transition to the next chapter. If there is a next chapter, use a proper Markdown link: [Next Chapter Title](next_chapter_filename).
+
+- Ensure the tone is welcoming and easy for a newcomer to understand.
+
+- Output *only* the Markdown content for this chapter.
+
+Now, directly provide a super beginner-friendly Markdown output (DON'T need ```markdown``` tags):
+
+2025-05-27 15:02:30,090 - INFO - RESPONSE: # Chapter 5: BlocObserver
+
+Welcome back! In the last chapter, we finally peeked inside the "brain" of our counter application, the [CounterCubit](04_countercubit_.md). We saw how it holds the current count (`state`) and uses `emit()` to update the number and signal changes to the [CounterView](03_counterview_.md).
+
+Today, we're going to talk about something that helps us *see* these signals. Imagine you're watching the [CounterCubit](04_countercubit_.md) very closely. Every time its number changes (every time it `emit()`s a new state), you write down what the number *was* and what it just changed *to*. This is exactly what the **BlocObserver** does! It's like our silent reporter, watching the `CounterCubit` and making notes of every time its state changes.
+
+Why would we want this reporter? When you're building apps, especially as they get more complicated, sometimes the numbers or data don't change the way you expect. The `BlocObserver` is a super helpful tool for debugging. It prints messages to your console (that technical window where you see app activity) every time a state changes. Seeing these messages can help you understand exactly when and how your `CounterCubit` is changing its number, which is invaluable for finding and fixing problems.
+
+In our simple counter app, the `BlocObserver` will show us messages like "CounterCubit state changed from 0 to 1" when we press the plus button.
+
+## What is BlocObserver?
+
+The `BlocObserver` is a special class provided by the `bloc` library. You can create your own custom observer by extending the `BlocObserver` class and overriding (changing) some of its methods to add your own actions, like printing messages.
+
+In our `flutter_counter` project, we have a custom observer specifically for our counter, called `CounterObserver`.
+
+Let's look at its code:
+
+```dart
+// File: lib/counter_observer.dart
+
+import 'package:bloc/bloc.dart';
+
+/// Our custom observer for the counter
+class CounterObserver extends BlocObserver {
+  /// Just creates our observer
+  const CounterObserver();
+
+  @override
+  void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
+    super.onChange(bloc, change);
+    // Print a message whenever a state changes!
+    // ignore: avoid_print
+    print('${bloc.runtimeType} $change');
+  }
+}
+```
+
+Let's break this down:
+
+*   `class CounterObserver extends BlocObserver`: This tells Flutter that `CounterObserver` is our custom observer, inheriting from the standard `BlocObserver`.
+*   `const CounterObserver();`: This is just the standard way to create our observer.
+*   `@override void onChange(BlocBase<dynamic> bloc, Change<dynamic> change)`: This is the key method we've overridden. The `BlocObserver` automatically calls this method *every time* a `Bloc` or `Cubit` (like our [CounterCubit](04_countercubit_.md)) emits a new state.
+    *   `bloc`: This tells us *which* `Bloc` or `Cubit` had a state change (in our case, it will be our `CounterCubit`). `bloc.runtimeType` tells us its name as code.
+    *   `change`: This is a special object that tells us what the state was *before* the change (`change.currentState`) and what the state is *after* the change (`change.nextState`).
+*   `super.onChange(bloc, change);`: This line calls the original `onChange` method from the `BlocObserver` class. It's good practice to include this.
+*   `print('${bloc.runtimeType} $change');`: This is where the magic happens! We use the `print` function to send a message to the console. This message will include the name of the `Cubit` (`bloc.runtimeType`) and the details of the change (`$change`). The `$change` will automatically show the previous and next state.
+
+So, this `CounterObserver` is set up to simply listen for *any* state change in *any* Bloc or Cubit it's watching and print a helpful message about it.
+
+## Connecting the Observer
+
+Creating the `CounterObserver` class isn't enough; we need to tell the `bloc` library to *use* our observer. This is done very early in our application's startup process, right in the `main` function.
+
+Remember this line from Chapter 1?
+
+```dart
+// File: lib/main.dart
+
+import 'package:bloc/bloc.dart';
+// ... other imports ...
+import 'package:flutter_counter/counter_observer.dart'; // We need our observer here
+
+void main() {
+  // This line connects our observer!
+  Bloc.observer = const CounterObserver();
+  runApp(const CounterApp());
+}
+```
+
+*   `Bloc.observer = const CounterObserver();`: This is the crucial line. The `bloc` library has a static property called `observer`. By setting this property to an instance of our `CounterObserver`, we are telling the `bloc` library, "Hey, please use *this* observer to watch all the Blocs and Cubits in my app!".
+
+This happens *before* our [CounterApp](01_counterapp_.md) (and subsequently the [CounterPage](02_counterpage_.md) and [CounterCubit](04_countercubit_.md)) is even created. This ensures that our `CounterObserver` is ready to watch the `CounterCubit` from the moment it's brought to life.
+
+## How the Observer Works
+
+Let's visualize how the `BlocObserver` fits into the flow when the `CounterCubit` emits a new state (like when you press the "+" button):
+
+```mermaid
+sequenceDiagram
+    participant CounterView as CounterView (Screen)
+    participant CounterCubit as CounterCubit (Brain)
+    participant BlocObserver as BlocObserver (Reporter)
+    participant BlocLibrary as Bloc Library
+    participant Console as Console
+
+    CounterView->CounterCubit: Call increment()
+    CounterCubit->CounterCubit: Calculate new state (e.g., 1)
+    CounterCubit->BlocLibrary: emit(1) - Send new state
+    BlocLibrary->BlocObserver: Call onChange(CounterCubit, Change(0, 1))
+    BlocObserver->Console: print message (e.g., "CounterCubit Change { currentState: 0, nextState: 1 }")
+    BlocLibrary-->CounterView: Notify BlocBuilder of new state
+    CounterView->CounterView: Update display
+```
+
+1.  The user taps the "+" button on the [CounterView](03_counterview_.md).
+2.  The [CounterView](03_counterview_.md) calls `increment()` on the [CounterCubit](04_countercubit_.md).
+3.  The [CounterCubit](04_countercubit_.md) calculates the new state and calls `emit()`.
+4.  The `bloc` library receives the new state from the `CounterCubit`.
+5.  Since we set a `Bloc.observer`, the `bloc` library calls the `onChange` method on our `CounterObserver`, passing details about the change (what `Cubit` changed, and what the old and new states are).
+6.  Our `CounterObserver`'s `onChange` method executes the `print` statement, sending a message to the console.
+7.  *At the same time*, the `bloc` library also notifies any widgets listening (like our `BlocBuilder` in the [CounterView](03_counterview_.md)) that the state has changed.
+8.  The [CounterView](03_counterview_.md) updates its display.
+
+The `BlocObserver` is a separate process that just *watches* and reports. It doesn't affect *how* the state changes or *how* the UI is updated. It's purely there for observation and debugging.
+
+## What You'll See in the Console
+
+If you run the `flutter_counter` app and open your IDE's console (look for "Run" or "Debug" output), you'll see messages like these when you interact with the counter:
+
+*   When the app starts and the [CounterCubit](04_countercubit_.md) is created (it starts with state 0):
+    ```
+    CounterCubit change: Change { currentState: 0, nextState: 0 }
+    ```
+    (This might vary slightly depending on the exact setup, but you'll often see the initial state emitted).
+*   When you tap the "+" button:
+    ```
+    CounterCubit change: Change { currentState: 0, nextState: 1 }
+    ```
+*   If you tap "+" again:
+    ```
+    CounterCubit change: Change { currentState: 1, nextState: 2 }
+    ```
+*   If you tap the "-" button:
+    ```
+    CounterCubit change: Change { currentState: 2, nextState: 1 }
+    ```
+
+These messages give you a clear timeline of every state change that happens in your `CounterCubit`, which is incredibly useful for understanding the flow of data in your application.
+
+## Conclusion
+
+The `BlocObserver` is a powerful but simple tool for monitoring the state changes of your Blocs and Cubits. By creating a custom observer (like our `CounterObserver`) and setting `Bloc.observer` in the `main` function, we can get valuable insights into how our application's state is changing over time. While it doesn't change the app's behavior, it's an essential helper for development and debugging.
+
+We've now covered all the core components of our simple `flutter_counter` application: the main app structure ([CounterApp](01_counterapp_.md)), the connector page ([CounterPage](02_counterpage_.md)), the user interface ([CounterView](03_counterview_.md)), the logic "brain" ([CounterCubit](04_countercubit_.md)), and the reporting tool ([BlocObserver](05_blocobserver_.md)). You now have a foundational understanding of how this simple app is built using the Bloc pattern!
+
+There is no next chapter in this basic tutorial series. You can now explore the code more deeply or try modifying the app yourself!
